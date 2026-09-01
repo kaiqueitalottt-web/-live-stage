@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-<title>LIVE Stage V8 • 2D</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LIVE Stage V9 • 2D</title>
 
 <style>
+
 *{
   box-sizing:border-box;
   -webkit-tap-highlight-color:transparent;
@@ -21,205 +23,223 @@ html,body{
   overflow-x:hidden;
 }
 
-body{
-  background:#000;
-}
-
-/* =====================================================
+/* =========================================================
    PALCO
-===================================================== */
+   ========================================================= */
 
 #stage{
   position:relative;
   width:100%;
-  height:70vh;
+  height:72vh;
   min-height:470px;
   overflow:hidden;
 
-  background:
+  background-image:
     linear-gradient(
+      to bottom,
       rgba(0,0,0,.08),
-      rgba(0,0,0,.45)
+      rgba(0,0,0,.35)
     ),
-    url("fundo.jpg") center/cover no-repeat;
+    url("fundo.jpg");
+
+  background-position:center;
+  background-size:cover;
+  background-repeat:no-repeat;
 }
 
-#stage:after{
+/* iluminação */
+
+#stage::before{
   content:"";
   position:absolute;
-  inset:0;
+  inset:-20%;
   pointer-events:none;
+
   background:
-    radial-gradient(
-      ellipse at center bottom,
-      transparent 25%,
-      rgba(0,0,0,.5) 100%
+    linear-gradient(
+      65deg,
+      transparent 35%,
+      rgba(0,170,255,.18) 48%,
+      transparent 60%
+    ),
+    linear-gradient(
+      -65deg,
+      transparent 35%,
+      rgba(255,0,70,.18) 48%,
+      transparent 60%
     );
+
+  animation:lights 5s ease-in-out infinite alternate;
 }
 
-/* =====================================================
-   LUZES
-===================================================== */
+@keyframes lights{
+  from{
+    transform:translateX(-5%) rotate(-2deg);
+  }
+  to{
+    transform:translateX(5%) rotate(2deg);
+  }
+}
 
-.beam{
+/* chão */
+
+#stage::after{
+  content:"";
   position:absolute;
-  top:-30%;
-  width:18%;
-  height:150%;
-  opacity:.14;
-  filter:blur(22px);
-  transform-origin:top center;
+  left:0;
+  right:0;
+  bottom:0;
+  height:18%;
+
+  background:
+    linear-gradient(
+      to top,
+      rgba(0,0,0,.85),
+      transparent
+    );
+
   pointer-events:none;
-  z-index:2;
-  animation:sweep 4s ease-in-out infinite alternate;
 }
 
-.beam.blue{
-  left:8%;
-  background:#008cff;
-}
-
-.beam.red{
-  right:8%;
-  background:#ff1744;
-  animation-delay:-2s;
-}
-
-@keyframes sweep{
-  from{transform:rotate(10deg)}
-  to{transform:rotate(-10deg)}
-}
-
-/* =====================================================
-   STATUS
-===================================================== */
+/* =========================================================
+   INFORMAÇÕES
+   ========================================================= */
 
 #status{
   position:absolute;
-  top:15px;
+  top:14px;
   left:50%;
   transform:translateX(-50%);
-  z-index:100;
+  z-index:20;
 
-  padding:9px 17px;
-  border-radius:22px;
+  padding:8px 16px;
+  border-radius:999px;
 
-  background:rgba(0,0,0,.78);
+  background:rgba(0,0,0,.72);
   border:1px solid rgba(255,255,255,.2);
 
   font-size:13px;
   font-weight:bold;
-  white-space:nowrap;
 
-  box-shadow:
-    0 5px 25px rgba(0,0,0,.35);
+  backdrop-filter:blur(8px);
 }
 
 #name{
   position:absolute;
   left:50%;
-  bottom:8%;
+  bottom:18px;
   transform:translateX(-50%);
 
-  z-index:80;
+  z-index:20;
 
-  padding:8px 18px;
-  border-radius:13px;
+  min-width:170px;
+  padding:10px 20px;
 
-  background:rgba(5,5,8,.9);
-  border:1px solid rgba(255,255,255,.2);
+  text-align:center;
 
-  font-weight:bold;
-  font-size:14px;
+  background:rgba(0,0,0,.8);
+  border:1px solid rgba(255,255,255,.25);
+  border-radius:14px;
 
-  display:none;
+  font-size:18px;
+  font-weight:900;
 
-  box-shadow:0 5px 25px rgba(0,0,0,.4);
+  text-shadow:0 2px 8px #000;
 }
 
-/* =====================================================
-   PERSONAGEM 2D
-===================================================== */
+/* =========================================================
+   PERSONAGEM
+   ========================================================= */
 
 #character{
   position:absolute;
 
   left:50%;
-  bottom:9%;
+  bottom:62px;
 
-  width:180px;
-  height:330px;
+  width:150px;
+  height:300px;
 
-  z-index:60;
+  transform:translateX(-50%);
 
-  display:none;
+  z-index:10;
 
   transform-origin:center bottom;
-
-  filter:
-    drop-shadow(0 15px 10px rgba(0,0,0,.55));
 }
 
 /* cabeça */
 
 .head{
   position:absolute;
-  left:58px;
-  top:5px;
+  left:48px;
+  top:8px;
 
-  width:64px;
-  height:72px;
+  width:54px;
+  height:60px;
 
-  border-radius:45% 45% 42% 42%;
+  border-radius:45% 45% 48% 48%;
 
-  z-index:8;
+  background:linear-gradient(
+    135deg,
+    #f4c39c,
+    #b86e48
+  );
 
-  box-shadow:
-    inset -8px -8px 12px rgba(0,0,0,.25),
-    inset 5px 4px 8px rgba(255,255,255,.12);
+  border:3px solid rgba(0,0,0,.55);
+
+  z-index:5;
 }
 
 /* cabelo */
 
 .hair{
   position:absolute;
-  left:4px;
-  top:-7px;
+  left:-3px;
+  top:-8px;
 
-  width:56px;
-  height:30px;
+  width:60px;
+  height:25px;
 
-  border-radius:50% 55% 25% 25%;
+  border-radius:50% 50% 20% 20%;
 
-  z-index:10;
+  background:#151515;
+
+  z-index:6;
 }
 
 /* olhos */
 
 .eye{
   position:absolute;
-
   top:29px;
 
-  width:18px;
-  height:10px;
+  width:8px;
+  height:8px;
 
-  background:#fff;
   border-radius:50%;
 
-  z-index:15;
+  background:#111;
 
-  box-shadow:0 0 5px rgba(255,255,255,.8);
+  z-index:8;
+}
+
+.eye::after{
+  content:"";
+  position:absolute;
+  width:3px;
+  height:3px;
+  top:1px;
+  left:1px;
+  background:#fff;
+  border-radius:50%;
 }
 
 .eye.l{
-  left:12px;
-  transform:rotate(-12deg);
+  left:14px;
 }
 
 .eye.r{
-  right:12px;
-  transform:rotate(12deg);
+  right:14px;
 }
 
 /* corpo */
@@ -227,19 +247,25 @@ body{
 .body{
   position:absolute;
 
-  left:47px;
-  top:68px;
+  left:43px;
+  top:65px;
 
-  width:86px;
-  height:112px;
+  width:65px;
+  height:105px;
 
-  border-radius:25px 25px 18px 18px;
+  border-radius:18px 18px 12px 12px;
 
-  z-index:5;
+  background:linear-gradient(
+    135deg,
+    #444,
+    #111
+  );
 
-  box-shadow:
-    inset -10px -8px 14px rgba(0,0,0,.3),
-    inset 7px 4px 10px rgba(255,255,255,.1);
+  border:3px solid rgba(0,0,0,.7);
+
+  transform-origin:50% 10%;
+
+  z-index:3;
 }
 
 /* braços */
@@ -247,27 +273,30 @@ body{
 .arm{
   position:absolute;
 
-  top:77px;
+  top:74px;
 
-  width:25px;
-  height:108px;
+  width:22px;
+  height:88px;
 
-  border-radius:20px;
+  border-radius:14px;
 
-  z-index:4;
+  background:#555;
 
-  transform-origin:50% 12px;
+  border:3px solid rgba(0,0,0,.7);
 
-  box-shadow:
-    inset -6px -5px 8px rgba(0,0,0,.3);
+  transform-origin:50% 10%;
+
+  z-index:2;
 }
 
 .arm.l{
-  left:25px;
+  left:26px;
+  transform:rotate(15deg);
 }
 
 .arm.r{
-  right:25px;
+  right:26px;
+  transform:rotate(-15deg);
 }
 
 /* mãos */
@@ -275,14 +304,26 @@ body{
 .hand{
   position:absolute;
 
-  width:27px;
-  height:27px;
+  width:23px;
+  height:23px;
 
   border-radius:50%;
 
-  top:172px;
+  background:#d99b72;
 
-  z-index:7;
+  border:3px solid rgba(0,0,0,.55);
+
+  z-index:4;
+}
+
+.hand.l{
+  left:24px;
+  top:143px;
+}
+
+.hand.r{
+  right:24px;
+  top:143px;
 }
 
 /* pernas */
@@ -290,27 +331,28 @@ body{
 .leg{
   position:absolute;
 
-  top:169px;
+  top:160px;
 
-  width:31px;
-  height:130px;
+  width:27px;
+  height:100px;
 
-  border-radius:17px;
+  border-radius:12px;
 
-  z-index:3;
+  background:#222;
 
-  transform-origin:50% 10px;
+  border:3px solid rgba(0,0,0,.7);
 
-  box-shadow:
-    inset -7px -6px 10px rgba(0,0,0,.3);
+  transform-origin:50% 5%;
+
+  z-index:1;
 }
 
 .leg.l{
-  left:52px;
+  left:43px;
 }
 
 .leg.r{
-  right:52px;
+  right:43px;
 }
 
 /* botas */
@@ -318,774 +360,1421 @@ body{
 .boot{
   position:absolute;
 
-  width:38px;
-  height:28px;
+  width:39px;
+  height:25px;
 
-  border-radius:12px 12px 7px 7px;
+  background:#080808;
 
-  top:286px;
+  border:3px solid rgba(255,255,255,.08);
 
-  z-index:4;
+  border-radius:12px 15px 7px 7px;
 
-  box-shadow:
-    inset -5px -4px 6px rgba(0,0,0,.3);
+  z-index:2;
 }
 
 .boot.l{
-  left:47px;
+  left:34px;
+  top:248px;
 }
 
 .boot.r{
-  right:47px;
+  right:34px;
+  top:248px;
 }
 
-/* =====================================================
-   ROUPAS / PERSONAGENS
-===================================================== */
+/* =========================================================
+   ROUPAS DOS PERSONAGENS
+   ========================================================= */
 
 /* ARANHA */
 
-.spider .head,
-.spider .body,
+.spider .body{
+  background:
+    radial-gradient(circle at 50% 38%,#fff 0 4%,transparent 5%),
+    linear-gradient(135deg,#e31b23,#121212 65%);
+  border-color:#d71920;
+}
+
 .spider .arm{
-  background:linear-gradient(135deg,#171717,#7b0012);
-  border:2px solid #ef1734;
+  background:linear-gradient(#e21d27,#111);
 }
 
 .spider .leg{
-  background:linear-gradient(135deg,#161616,#090909);
-  border:2px solid #d9152d;
+  background:linear-gradient(90deg,#e31b23,#111);
 }
 
-.spider .hand,
-.spider .boot{
-  background:#151515;
-  border:2px solid #e51a32;
+.spider .head{
+  background:#d71920;
 }
 
-.spider .body:after{
-  content:"✦";
-  position:absolute;
-  left:28px;
-  top:25px;
+.spider .hair{
+  background:#111;
+}
 
-  font-size:34px;
-  color:#fff;
+.spider .eye{
+  width:15px;
+  height:21px;
+  background:#fff;
+  border:2px solid #111;
+  border-radius:60% 30%;
+}
 
-  text-shadow:
-    0 0 4px #f00;
+.spider .eye.l{
+  transform:rotate(25deg);
+}
+
+.spider .eye.r{
+  transform:rotate(-25deg);
 }
 
 /* HULK */
 
 .hulk .head{
-  background:linear-gradient(135deg,#70b94b,#28682f);
+  background:#65b84a;
 }
 
-.hulk .body,
+.hulk .body{
+  background:linear-gradient(
+    #71c64c,
+    #4c8e38 25%,
+    #5d297e 26%,
+    #27132f
+  );
+  border-color:#397b2c;
+}
+
 .hulk .arm{
-  background:linear-gradient(135deg,#5aa93d,#235c2c);
+  background:#5cad45;
 }
 
 .hulk .leg{
-  background:linear-gradient(135deg,#322d3c,#15131c);
+  background:#52236d;
 }
 
 .hulk .hand{
-  background:#4f9c3a;
-}
-
-.hulk .boot{
-  background:#25222c;
+  background:#5cad45;
 }
 
 /* BATMAN */
 
 .batman .head{
-  background:#222;
+  background:#ddd;
 }
 
-.batman .body,
+.batman .hair{
+  background:#111;
+  height:32px;
+}
+
+.batman .body{
+  background:
+    linear-gradient(
+      135deg,
+      #272727,
+      #050505
+    );
+  border-color:#555;
+}
+
 .batman .arm,
 .batman .leg{
-  background:linear-gradient(135deg,#30333a,#08090b);
-  border:2px solid #555;
+  background:#111;
 }
 
-.batman .hand,
-.batman .boot{
-  background:#090909;
-  border:2px solid #444;
-}
-
-.batman .body:after{
-  content:"🦇";
+.batman .body::after{
+  content:"";
   position:absolute;
-  left:25px;
-  top:30px;
-  font-size:32px;
+  left:22px;
+  top:28px;
+  width:20px;
+  height:12px;
+  background:#e8c82e;
+  clip-path:polygon(
+    0 30%,25% 30%,35% 0,
+    50% 25%,65% 0,75% 30%,
+    100% 30%,75% 100%,50% 65%,
+    25% 100%
+  );
 }
 
-/* HOMEM DE FERRO */
+/* IRON */
 
 .iron .head{
-  background:linear-gradient(135deg,#f4c54e,#8b5200);
-  border:3px solid #ffcf40;
+  background:linear-gradient(
+    135deg,
+    #e9c39b,
+    #9c5a38
+  );
 }
 
-.iron .body,
+.iron .body{
+  background:
+    linear-gradient(
+      135deg,
+      #d92828,
+      #8c1111 50%,
+      #dca72d
+    );
+  border-color:#ffcf3d;
+}
+
 .iron .arm{
-  background:linear-gradient(135deg,#e32925,#72000b);
-  border:3px solid #ffc928;
+  background:linear-gradient(
+    #e52c2c,
+    #9a1010
+  );
 }
 
 .iron .leg{
-  background:linear-gradient(135deg,#b91d20,#4e0509);
-  border:3px solid #e5a91d;
+  background:linear-gradient(
+    #9c1717,
+    #e5ad29
+  );
 }
 
-.iron .hand,
-.iron .boot{
-  background:#bd2022;
-  border:2px solid #ffca28;
-}
-
-.iron .body:after{
-  content:"◆";
+.iron .body::after{
+  content:"";
   position:absolute;
-  left:30px;
-  top:29px;
-  color:#dfffff;
-  font-size:29px;
-  text-shadow:0 0 12px #8ff;
+  left:22px;
+  top:35px;
+
+  width:20px;
+  height:20px;
+
+  border-radius:50%;
+
+  background:#bfffff;
+  box-shadow:0 0 15px #7ff;
 }
 
 /* SUPERMAN */
 
-.superman .head{
-  background:#bd7c59;
-}
-
 .superman .body{
-  background:linear-gradient(#1764c0,#0b3471);
-  border:3px solid #e11d2e;
+  background:
+    linear-gradient(
+      #1264c4 0 60%,
+      #b91f25 61% 100%
+    );
+  border-color:#153a79;
 }
 
 .superman .arm{
-  background:#1764c0;
+  background:#1764bd;
 }
 
 .superman .leg{
-  background:#14264b;
+  background:#1764bd;
 }
 
-.superman .hand{
-  background:#bd7c59;
-}
-
-.superman .boot{
-  background:#9e1523;
-}
-
-.superman .body:after{
+.superman .body::after{
   content:"S";
   position:absolute;
-  left:28px;
-  top:25px;
-  font-size:38px;
+
+  left:20px;
+  top:20px;
+
+  width:25px;
+  height:25px;
+
+  color:#ffd52d;
+
+  font-size:25px;
   font-weight:900;
-  color:#ffd928;
+  text-align:center;
+
+  background:#c62028;
+
+  clip-path:polygon(
+    50% 0,
+    100% 25%,
+    82% 78%,
+    50% 100%,
+    18% 78%,
+    0 25%
+  );
 }
 
 /* FLASH */
 
-.flash .head{
-  background:#9d5f46;
+.flash .body{
+  background:linear-gradient(
+    #e83226,
+    #a40d0d
+  );
+  border-color:#ffcf35;
 }
 
-.flash .body,
-.flash .arm,
+.flash .arm{
+  background:#df2921;
+}
+
 .flash .leg{
-  background:linear-gradient(135deg,#e00000,#700000);
-  border:2px solid #ffce00;
+  background:#df2921;
 }
 
-.flash .hand,
-.flash .boot{
-  background:#d60000;
-  border:2px solid #ffd000;
-}
-
-.flash .body:after{
+.flash .body::after{
   content:"⚡";
   position:absolute;
-  left:29px;
-  top:28px;
-  font-size:31px;
-  color:#ffe000;
+  left:22px;
+  top:30px;
+  color:#ffd42e;
+  font-size:27px;
 }
 
 /* CAPITÃO */
 
-.cap .head{
-  background:#b87958;
-}
-
 .cap .body{
-  background:linear-gradient(135deg,#1d63a9,#102d62);
-  border:3px solid #eee;
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      #d9272e 0 13px,
+      #f2f2f2 13px 26px
+    );
+  border-color:#244b99;
 }
 
 .cap .arm{
-  background:#1b5897;
+  background:#244d9e;
 }
 
 .cap .leg{
-  background:#26334e;
+  background:#254d9c;
 }
 
-.cap .hand{
-  background:#b87958;
-}
-
-.cap .boot{
-  background:#202631;
-}
-
-.cap .body:after{
+.cap .body::after{
   content:"★";
   position:absolute;
-  left:28px;
-  top:29px;
-  color:white;
-  font-size:34px;
+  left:20px;
+  top:27px;
+  width:25px;
+  height:25px;
+  border-radius:50%;
+  background:#2857ad;
+  color:#fff;
+  text-align:center;
+  font-size:19px;
 }
 
 /* NINJA */
 
 .ninja .head{
-  background:#1a1a1d;
+  background:#c98d67;
 }
 
-.ninja .body,
-.ninja .arm,
+.ninja .body{
+  background:
+    linear-gradient(
+      135deg,
+      #111,
+      #1d3d52,
+      #111
+    );
+  border-color:#38cfff;
+}
+
+.ninja .arm{
+  background:#172d3b;
+}
+
 .ninja .leg{
-  background:linear-gradient(135deg,#31313a,#09090c);
-  border:2px solid #566bff;
+  background:#101b25;
 }
 
-.ninja .hand,
-.ninja .boot{
-  background:#08080a;
-  border:2px solid #566bff;
-}
-
-.ninja .body:after{
-  content:"✦";
+.ninja .body::after{
+  content:"";
   position:absolute;
-  left:31px;
-  top:29px;
-  color:#7888ff;
-  font-size:27px;
+  left:0;
+  right:0;
+  top:25px;
+  height:7px;
+  background:#35d8ff;
+  box-shadow:0 0 12px #35d8ff;
 }
 
 /* ROBÔ */
 
-.robot .head,
-.robot .body,
+.robot .head{
+  background:linear-gradient(
+    #bfc7d0,
+    #68737d
+  );
+  border-color:#ddd;
+}
+
+.robot .hair{
+  background:#56616a;
+}
+
+.robot .body{
+  background:
+    linear-gradient(
+      135deg,
+      #69747f,
+      #1f272e
+    );
+  border-color:#9ba8b2;
+}
+
 .robot .arm,
 .robot .leg{
-  background:linear-gradient(135deg,#d2d8df,#424a56);
-  border:2px solid #6cecff;
+  background:#59656e;
+  border-color:#aab5bc;
 }
 
-.robot .hand,
-.robot .boot{
-  background:#65717e;
-  border:2px solid #6cecff;
-}
-
-.robot .body:after{
-  content:"◈";
-  position:absolute;
-  left:29px;
-  top:29px;
-  color:#67edff;
-  font-size:30px;
+.robot .hand{
+  background:#76838d;
 }
 
 /* ALIEN */
 
 .alien .head{
-  background:linear-gradient(135deg,#87ff8d,#16783c);
+  width:64px;
+  left:43px;
+  height:68px;
+  border-radius:50%;
+  background:linear-gradient(
+    #a6ff6b,
+    #3d9d35
+  );
 }
 
-.alien .body,
+.alien .eye{
+  width:15px;
+  height:23px;
+  background:#050505;
+  border-radius:50%;
+}
+
+.alien .body{
+  background:
+    linear-gradient(
+      #55bd55,
+      #1d612e
+    );
+  border-color:#7dff7d;
+}
+
 .alien .arm{
-  background:linear-gradient(135deg,#238f54,#10452c);
-  border:2px solid #65ff9a;
+  background:#49a948;
 }
 
 .alien .leg{
-  background:#123f2a;
-  border:2px solid #65ff9a;
+  background:#246d32;
 }
 
 .alien .hand{
-  background:#52c978;
-}
-
-.alien .boot{
-  background:#0b2419;
+  background:#5cbd50;
 }
 
 /* MAGO */
 
-.mage .head{
-  background:#8b5a43;
+.mage .body{
+  background:
+    linear-gradient(
+      135deg,
+      #6e2dc9,
+      #24104e
+    );
+  border-color:#d4a8ff;
 }
 
-.mage .body,
-.mage .arm,
+.mage .arm{
+  background:#4e2392;
+}
+
 .mage .leg{
-  background:linear-gradient(135deg,#6d27a8,#210b45);
-  border:2px solid #d58aff;
+  background:#241043;
 }
 
-.mage .hand{
-  background:#8b5a43;
+.mage .head{
+  background:#c78e68;
 }
 
-.mage .boot{
-  background:#170728;
-}
-
-.mage .body:after{
-  content:"✦";
-  position:absolute;
-  left:29px;
-  top:28px;
-  color:#efb3ff;
-  font-size:32px;
+.mage .hair{
+  background:#2a1744;
+  height:34px;
 }
 
 /* NINJA SOMBRIO */
 
-.darkninja .head,
-.darkninja .body,
-.darkninja .arm,
+.darkninja .head{
+  background:#b87958;
+}
+
+.darkninja .body{
+  background:
+    linear-gradient(
+      135deg,
+      #080808,
+      #3b0b27,
+      #090909
+    );
+  border-color:#9b174f;
+}
+
+.darkninja .arm{
+  background:#160b15;
+}
+
 .darkninja .leg{
-  background:linear-gradient(135deg,#15151b,#020204);
-  border:2px solid #a500ff;
-}
-
-.darkninja .hand,
-.darkninja .boot{
-  background:#030305;
-  border:2px solid #a500ff;
-}
-
-.darkninja .body:after{
-  content:"☠";
-  position:absolute;
-  left:28px;
-  top:29px;
-  color:#c000ff;
-  font-size:29px;
+  background:#090909;
 }
 
 /* TITÃ */
 
-.titan .head,
-.titan .body,
-.titan .arm,
-.titan .leg{
-  background:linear-gradient(135deg,#667080,#171c27);
-  border:2px solid #b9c9ff;
+.titan .head{
+  background:#68737d;
 }
 
-.titan .hand,
-.titan .boot{
-  background:#323b4a;
-  border:2px solid #9aaeff;
+.titan .body{
+  background:
+    linear-gradient(
+      135deg,
+      #747e88,
+      #272d35
+    );
+  border-color:#c2ccd5;
+}
+
+.titan .arm,
+.titan .leg{
+  background:#444c55;
+  border-color:#87939e;
+}
+
+.titan .hand{
+  background:#68747f;
 }
 
 /* CÓSMICO */
 
-.cosmic .head{
-  background:linear-gradient(135deg,#6eeaff,#5143b9);
+.cosmic .body{
+  background:
+    radial-gradient(circle at 25% 30%,#fff 0 2%,transparent 3%),
+    radial-gradient(circle at 70% 60%,#fff 0 2%,transparent 3%),
+    linear-gradient(
+      135deg,
+      #31136e,
+      #09285c,
+      #111
+    );
+  border-color:#7f5cff;
 }
 
-.cosmic .body,
-.cosmic .arm,
+.cosmic .arm{
+  background:#24205d;
+}
+
 .cosmic .leg{
-  background:linear-gradient(135deg,#2c42c4,#17073f);
-  border:2px solid #7ffaff;
+  background:#16143e;
 }
 
-.cosmic .hand,
-.cosmic .boot{
-  background:#242c8d;
-  border:2px solid #7ffaff;
-}
-
-.cosmic .body:after{
+.cosmic .body::after{
   content:"✦";
   position:absolute;
-  left:28px;
-  top:28px;
-  color:#91ffff;
-  font-size:31px;
+  left:20px;
+  top:27px;
+  font-size:25px;
+  color:#fff;
+  text-shadow:0 0 12px #fff;
 }
 
 /* DRAGÃO */
 
-.dragon .head,
-.dragon .body,
-.dragon .arm,
+.dragon .head{
+  background:linear-gradient(
+    #da684d,
+    #7b281e
+  );
+}
+
+.dragon .body{
+  background:
+    linear-gradient(
+      135deg,
+      #c63a2c,
+      #641c17
+    );
+  border-color:#ff8b3d;
+}
+
+.dragon .arm{
+  background:#9e2d23;
+}
+
 .dragon .leg{
-  background:linear-gradient(135deg,#d64025,#4c0e0b);
-  border:2px solid #ff9a28;
+  background:#551814;
 }
 
-.dragon .hand,
-.dragon .boot{
-  background:#68150e;
-  border:2px solid #ff9a28;
+.dragon .hand{
+  background:#c44937;
 }
 
-.dragon .body:after{
-  content:"🐲";
-  position:absolute;
-  left:25px;
-  top:28px;
-  font-size:31px;
-}
-
-/* =====================================================
-   ANIMAÇÃO DE ENTRADA
-===================================================== */
+/* =========================================================
+   ENTRADA
+   ========================================================= */
 
 .enter{
-  display:block!important;
-  animation:
-    entrance 1.25s cubic-bezier(.16,.82,.25,1) forwards;
+  animation:entrance 1.25s cubic-bezier(.2,.8,.2,1) forwards;
 }
 
 @keyframes entrance{
   0%{
-    opacity:0;
     transform:
-      translate(-170%,30px)
-      rotate(-12deg)
+      translateX(-420px)
+      translateY(70px)
+      rotate(-35deg)
       scale(.5);
+
+    opacity:0;
   }
 
-  65%{
-    opacity:1;
+  60%{
     transform:
-      translate(-45%,0)
-      rotate(4deg)
+      translateX(35px)
+      translateY(-8px)
+      rotate(8deg)
       scale(1.08);
+
+    opacity:1;
+  }
+
+  80%{
+    transform:
+      translateX(-12px)
+      translateY(3px)
+      rotate(-4deg)
+      scale(.98);
   }
 
   100%{
-    opacity:1;
     transform:
-      translate(-50%,0)
+      translateX(-50%)
+      translateY(0)
       rotate(0)
       scale(1);
   }
 }
 
-/* =====================================================
-   DANÇA — BRAÇOS + PERNAS + CORPO
-===================================================== */
+/* =========================================================
+   DANÇAS
+   ========================================================= */
 
-.dance{
-  display:block!important;
-  animation:bodyDance .48s infinite alternate ease-in-out;
+/* ARANHA */
+
+.spider.dance .body{
+  animation:spiderBody .65s ease-in-out infinite alternate;
 }
 
-.dance .head{
-  animation:headDance .48s infinite alternate ease-in-out;
+.spider.dance .arm.l{
+  animation:spiderArmL .42s ease-in-out infinite alternate;
 }
 
-.dance .arm.l{
-  animation:armLeft .42s infinite alternate ease-in-out;
+.spider.dance .arm.r{
+  animation:spiderArmR .53s ease-in-out infinite alternate;
 }
 
-.dance .arm.r{
-  animation:armRight .42s infinite alternate ease-in-out;
+.spider.dance .leg.l{
+  animation:spiderLegL .5s ease-in-out infinite alternate;
 }
 
-.dance .leg.l{
-  animation:legLeft .48s infinite alternate ease-in-out;
+.spider.dance .leg.r{
+  animation:spiderLegR .58s ease-in-out infinite alternate;
 }
 
-.dance .leg.r{
-  animation:legRight .48s infinite alternate ease-in-out;
+@keyframes spiderBody{
+  from{transform:rotate(-7deg) translateY(3px)}
+  to{transform:rotate(7deg) translateY(-8px)}
 }
 
-@keyframes bodyDance{
-  0%{
-    transform:
-      translate(-50%,0)
-      rotate(-3deg)
-      scale(1);
-  }
-
-  50%{
-    transform:
-      translate(-50%,-13px)
-      rotate(3deg)
-      scale(1.035);
-  }
-
-  100%{
-    transform:
-      translate(-50%,0)
-      rotate(-3deg)
-      scale(1);
-  }
+@keyframes spiderArmL{
+  from{transform:rotate(-50deg)}
+  to{transform:rotate(25deg)}
 }
 
-@keyframes headDance{
-  from{
-    transform:rotate(-5deg);
-  }
-  to{
-    transform:rotate(6deg);
-  }
+@keyframes spiderArmR{
+  from{transform:rotate(50deg)}
+  to{transform:rotate(-25deg)}
 }
 
-@keyframes armLeft{
-  from{
-    transform:rotate(22deg);
-  }
-  to{
-    transform:rotate(-48deg);
-  }
+@keyframes spiderLegL{
+  from{transform:rotate(15deg)}
+  to{transform:rotate(-22deg)}
 }
 
-@keyframes armRight{
-  from{
-    transform:rotate(-22deg);
-  }
-  to{
-    transform:rotate(48deg);
-  }
+@keyframes spiderLegR{
+  from{transform:rotate(-15deg)}
+  to{transform:rotate(22deg)}
 }
 
-@keyframes legLeft{
-  from{
-    transform:rotate(-9deg);
-  }
-  to{
-    transform:rotate(16deg);
-  }
+/* HULK */
+
+.hulk.dance .body{
+  animation:hulkBody .8s ease-in-out infinite alternate;
 }
 
-@keyframes legRight{
-  from{
-    transform:rotate(9deg);
-  }
-  to{
-    transform:rotate(-16deg);
-  }
+.hulk.dance .arm.l{
+  animation:hulkArmL .8s ease-in-out infinite alternate;
 }
 
-/* =====================================================
+.hulk.dance .arm.r{
+  animation:hulkArmR .8s ease-in-out infinite alternate;
+}
+
+.hulk.dance .leg.l{
+  animation:hulkLegL .8s ease-in-out infinite alternate;
+}
+
+.hulk.dance .leg.r{
+  animation:hulkLegR .8s ease-in-out infinite alternate;
+}
+
+@keyframes hulkBody{
+  from{transform:translateY(4px) rotate(-5deg)}
+  to{transform:translateY(-9px) rotate(5deg)}
+}
+
+@keyframes hulkArmL{
+  from{transform:rotate(-80deg)}
+  to{transform:rotate(-10deg)}
+}
+
+@keyframes hulkArmR{
+  from{transform:rotate(80deg)}
+  to{transform:rotate(10deg)}
+}
+
+@keyframes hulkLegL{
+  from{transform:rotate(-15deg)}
+  to{transform:rotate(22deg)}
+}
+
+@keyframes hulkLegR{
+  from{transform:rotate(15deg)}
+  to{transform:rotate(-22deg)}
+}
+
+/* BATMAN */
+
+.batman.dance .body{
+  animation:batBody 1s ease-in-out infinite alternate;
+}
+
+.batman.dance .arm.l{
+  animation:batArmL 1s ease-in-out infinite alternate;
+}
+
+.batman.dance .arm.r{
+  animation:batArmR 1s ease-in-out infinite alternate;
+}
+
+.batman.dance .leg.l{
+  animation:batLegL 1s ease-in-out infinite alternate;
+}
+
+.batman.dance .leg.r{
+  animation:batLegR 1s ease-in-out infinite alternate;
+}
+
+@keyframes batBody{
+  from{transform:rotate(-8deg) translateX(-3px)}
+  to{transform:rotate(8deg) translateX(3px)}
+}
+
+@keyframes batArmL{
+  from{transform:rotate(-20deg)}
+  to{transform:rotate(-75deg)}
+}
+
+@keyframes batArmR{
+  from{transform:rotate(20deg)}
+  to{transform:rotate(75deg)}
+}
+
+@keyframes batLegL{
+  from{transform:rotate(20deg)}
+  to{transform:rotate(-10deg)}
+}
+
+@keyframes batLegR{
+  from{transform:rotate(-20deg)}
+  to{transform:rotate(10deg)}
+}
+
+/* IRON */
+
+.iron.dance .body{
+  animation:ironBody .42s steps(2) infinite alternate;
+}
+
+.iron.dance .arm.l{
+  animation:ironArmL .48s steps(2) infinite alternate;
+}
+
+.iron.dance .arm.r{
+  animation:ironArmR .48s steps(2) infinite alternate;
+}
+
+.iron.dance .leg.l{
+  animation:ironLegL .48s steps(2) infinite alternate;
+}
+
+.iron.dance .leg.r{
+  animation:ironLegR .48s steps(2) infinite alternate;
+}
+
+@keyframes ironBody{
+  from{transform:translateY(0) rotate(-3deg)}
+  to{transform:translateY(-9px) rotate(3deg)}
+}
+
+@keyframes ironArmL{
+  from{transform:rotate(-90deg)}
+  to{transform:rotate(-20deg)}
+}
+
+@keyframes ironArmR{
+  from{transform:rotate(90deg)}
+  to{transform:rotate(20deg)}
+}
+
+@keyframes ironLegL{
+  from{transform:rotate(15deg)}
+  to{transform:rotate(-15deg)}
+}
+
+@keyframes ironLegR{
+  from{transform:rotate(-15deg)}
+  to{transform:rotate(15deg)}
+}
+
+/* SUPERMAN */
+
+.superman.dance .body{
+  animation:superBody .9s ease-in-out infinite alternate;
+}
+
+.superman.dance .arm.l{
+  animation:superArmL .9s ease-in-out infinite alternate;
+}
+
+.superman.dance .arm.r{
+  animation:superArmR .9s ease-in-out infinite alternate;
+}
+
+.superman.dance .leg.l{
+  animation:superLegL .9s ease-in-out infinite alternate;
+}
+
+.superman.dance .leg.r{
+  animation:superLegR .9s ease-in-out infinite alternate;
+}
+
+@keyframes superBody{
+  from{transform:translateY(2px) rotate(-5deg)}
+  to{transform:translateY(-8px) rotate(5deg)}
+}
+
+@keyframes superArmL{
+  from{transform:rotate(-25deg)}
+  to{transform:rotate(-115deg)}
+}
+
+@keyframes superArmR{
+  from{transform:rotate(25deg)}
+  to{transform:rotate(115deg)}
+}
+
+@keyframes superLegL{
+  from{transform:rotate(-15deg)}
+  to{transform:rotate(10deg)}
+}
+
+@keyframes superLegR{
+  from{transform:rotate(15deg)}
+  to{transform:rotate(-10deg)}
+}
+
+/* FLASH */
+
+.flash.dance .body{
+  animation:flashBody .28s ease-in-out infinite alternate;
+}
+
+.flash.dance .arm.l{
+  animation:flashArmL .3s ease-in-out infinite alternate;
+}
+
+.flash.dance .arm.r{
+  animation:flashArmR .3s ease-in-out infinite alternate;
+}
+
+.flash.dance .leg.l{
+  animation:flashLegL .25s ease-in-out infinite alternate;
+}
+
+.flash.dance .leg.r{
+  animation:flashLegR .25s ease-in-out infinite alternate;
+}
+
+@keyframes flashBody{
+  from{transform:translateX(-6px) rotate(-4deg)}
+  to{transform:translateX(6px) rotate(4deg)}
+}
+
+@keyframes flashArmL{
+  from{transform:rotate(-80deg)}
+  to{transform:rotate(20deg)}
+}
+
+@keyframes flashArmR{
+  from{transform:rotate(80deg)}
+  to{transform:rotate(-20deg)}
+}
+
+@keyframes flashLegL{
+  from{transform:rotate(25deg)}
+  to{transform:rotate(-25deg)}
+}
+
+@keyframes flashLegR{
+  from{transform:rotate(-25deg)}
+  to{transform:rotate(25deg)}
+}
+
+/* CAP */
+
+.cap.dance .body{
+  animation:capBody .7s ease-in-out infinite alternate;
+}
+
+.cap.dance .arm.l{
+  animation:capArmL .7s ease-in-out infinite alternate;
+}
+
+.cap.dance .arm.r{
+  animation:capArmR .7s ease-in-out infinite alternate;
+}
+
+.cap.dance .leg.l{
+  animation:capLegL .7s ease-in-out infinite alternate;
+}
+
+.cap.dance .leg.r{
+  animation:capLegR .7s ease-in-out infinite alternate;
+}
+
+@keyframes capBody{
+  from{transform:rotate(-7deg)}
+  to{transform:rotate(7deg)}
+}
+
+@keyframes capArmL{
+  from{transform:rotate(-70deg)}
+  to{transform:rotate(5deg)}
+}
+
+@keyframes capArmR{
+  from{transform:rotate(70deg)}
+  to{transform:rotate(-5deg)}
+}
+
+@keyframes capLegL{
+  from{transform:rotate(-20deg)}
+  to{transform:rotate(25deg)}
+}
+
+@keyframes capLegR{
+  from{transform:rotate(20deg)}
+  to{transform:rotate(-25deg)}
+}
+
+/* NINJA */
+
+.ninja.dance .body{
+  animation:ninjaBody .4s ease-in-out infinite alternate;
+}
+
+.ninja.dance .arm.l{
+  animation:ninjaArmL .35s ease-in-out infinite alternate;
+}
+
+.ninja.dance .arm.r{
+  animation:ninjaArmR .35s ease-in-out infinite alternate;
+}
+
+.ninja.dance .leg.l{
+  animation:ninjaLegL .4s ease-in-out infinite alternate;
+}
+
+.ninja.dance .leg.r{
+  animation:ninjaLegR .4s ease-in-out infinite alternate;
+}
+
+@keyframes ninjaBody{
+  from{transform:translateX(-7px) rotate(-8deg)}
+  to{transform:translateX(7px) rotate(8deg)}
+}
+
+@keyframes ninjaArmL{
+  from{transform:rotate(-110deg)}
+  to{transform:rotate(15deg)}
+}
+
+@keyframes ninjaArmR{
+  from{transform:rotate(110deg)}
+  to{transform:rotate(-15deg)}
+}
+
+@keyframes ninjaLegL{
+  from{transform:rotate(30deg)}
+  to{transform:rotate(-30deg)}
+}
+
+@keyframes ninjaLegR{
+  from{transform:rotate(-30deg)}
+  to{transform:rotate(30deg)}
+}
+
+/* ROBÔ */
+
+.robot.dance .body{
+  animation:robotBody .35s steps(2) infinite alternate;
+}
+
+.robot.dance .arm.l{
+  animation:robotArmL .4s steps(2) infinite alternate;
+}
+
+.robot.dance .arm.r{
+  animation:robotArmR .4s steps(2) infinite alternate;
+}
+
+.robot.dance .leg.l{
+  animation:robotLegL .4s steps(2) infinite alternate;
+}
+
+.robot.dance .leg.r{
+  animation:robotLegR .4s steps(2) infinite alternate;
+}
+
+@keyframes robotBody{
+  from{transform:rotate(-5deg)}
+  to{transform:rotate(5deg)}
+}
+
+@keyframes robotArmL{
+  from{transform:rotate(-100deg)}
+  to{transform:rotate(-20deg)}
+}
+
+@keyframes robotArmR{
+  from{transform:rotate(100deg)}
+  to{transform:rotate(20deg)}
+}
+
+@keyframes robotLegL{
+  from{transform:rotate(-25deg)}
+  to{transform:rotate(20deg)}
+}
+
+@keyframes robotLegR{
+  from{transform:rotate(25deg)}
+  to{transform:rotate(-20deg)}
+}
+
+/* ALIEN */
+
+.alien.dance .body{
+  animation:alienBody .8s ease-in-out infinite alternate;
+}
+
+.alien.dance .arm.l{
+  animation:alienArmL .8s ease-in-out infinite alternate;
+}
+
+.alien.dance .arm.r{
+  animation:alienArmR .8s ease-in-out infinite alternate;
+}
+
+.alien.dance .leg.l{
+  animation:alienLegL .8s ease-in-out infinite alternate;
+}
+
+.alien.dance .leg.r{
+  animation:alienLegR .8s ease-in-out infinite alternate;
+}
+
+@keyframes alienBody{
+  from{transform:skewX(-8deg) rotate(-5deg)}
+  to{transform:skewX(8deg) rotate(5deg)}
+}
+
+@keyframes alienArmL{
+  from{transform:rotate(-40deg)}
+  to{transform:rotate(-120deg)}
+}
+
+@keyframes alienArmR{
+  from{transform:rotate(40deg)}
+  to{transform:rotate(120deg)}
+}
+
+@keyframes alienLegL{
+  from{transform:rotate(20deg)}
+  to{transform:rotate(-15deg)}
+}
+
+@keyframes alienLegR{
+  from{transform:rotate(-20deg)}
+  to{transform:rotate(15deg)}
+}
+
+/* MAGO */
+
+.mage.dance .body{
+  animation:mageBody 1.2s ease-in-out infinite alternate;
+}
+
+.mage.dance .arm.l{
+  animation:mageArmL 1s ease-in-out infinite alternate;
+}
+
+.mage.dance .arm.r{
+  animation:mageArmR 1s ease-in-out infinite alternate;
+}
+
+.mage.dance .leg.l{
+  animation:mageLegL 1s ease-in-out infinite alternate;
+}
+
+.mage.dance .leg.r{
+  animation:mageLegR 1s ease-in-out infinite alternate;
+}
+
+@keyframes mageBody{
+  from{transform:translateY(3px) rotate(-4deg)}
+  to{transform:translateY(-10px) rotate(4deg)}
+}
+
+@keyframes mageArmL{
+  from{transform:rotate(-20deg)}
+  to{transform:rotate(-100deg)}
+}
+
+@keyframes mageArmR{
+  from{transform:rotate(20deg)}
+  to{transform:rotate(100deg)}
+}
+
+@keyframes mageLegL{
+  from{transform:rotate(-12deg)}
+  to{transform:rotate(12deg)}
+}
+
+@keyframes mageLegR{
+  from{transform:rotate(12deg)}
+  to{transform:rotate(-12deg)}
+}
+
+/* DARK NINJA */
+
+.darkninja.dance .body{
+  animation:darkBody .5s ease-in-out infinite alternate;
+}
+
+.darkninja.dance .arm.l{
+  animation:darkArmL .45s ease-in-out infinite alternate;
+}
+
+.darkninja.dance .arm.r{
+  animation:darkArmR .45s ease-in-out infinite alternate;
+}
+
+.darkninja.dance .leg.l{
+  animation:darkLegL .5s ease-in-out infinite alternate;
+}
+
+.darkninja.dance .leg.r{
+  animation:darkLegR .5s ease-in-out infinite alternate;
+}
+
+@keyframes darkBody{
+  from{transform:rotate(-10deg) translateX(-5px)}
+  to{transform:rotate(10deg) translateX(5px)}
+}
+
+@keyframes darkArmL{
+  from{transform:rotate(-130deg)}
+  to{transform:rotate(10deg)}
+}
+
+@keyframes darkArmR{
+  from{transform:rotate(130deg)}
+  to{transform:rotate(-10deg)}
+}
+
+@keyframes darkLegL{
+  from{transform:rotate(35deg)}
+  to{transform:rotate(-25deg)}
+}
+
+@keyframes darkLegR{
+  from{transform:rotate(-35deg)}
+  to{transform:rotate(25deg)}
+}
+
+/* TITÃ */
+
+.titan.dance .body{
+  animation:titanBody 1.1s ease-in-out infinite alternate;
+}
+
+.titan.dance .arm.l{
+  animation:titanArmL 1.1s ease-in-out infinite alternate;
+}
+
+.titan.dance .arm.r{
+  animation:titanArmR 1.1s ease-in-out infinite alternate;
+}
+
+.titan.dance .leg.l{
+  animation:titanLegL 1.1s ease-in-out infinite alternate;
+}
+
+.titan.dance .leg.r{
+  animation:titanLegR 1.1s ease-in-out infinite alternate;
+}
+
+@keyframes titanBody{
+  from{transform:translateY(5px) rotate(-3deg)}
+  to{transform:translateY(-9px) rotate(3deg)}
+}
+
+@keyframes titanArmL{
+  from{transform:rotate(-45deg)}
+  to{transform:rotate(-100deg)}
+}
+
+@keyframes titanArmR{
+  from{transform:rotate(45deg)}
+  to{transform:rotate(100deg)}
+}
+
+@keyframes titanLegL{
+  from{transform:rotate(-10deg)}
+  to{transform:rotate(15deg)}
+}
+
+@keyframes titanLegR{
+  from{transform:rotate(10deg)}
+  to{transform:rotate(-15deg)}
+}
+
+/* CÓSMICO */
+
+.cosmic.dance .body{
+  animation:cosmicBody 1.5s ease-in-out infinite alternate;
+}
+
+.cosmic.dance .arm.l{
+  animation:cosmicArmL 1.5s ease-in-out infinite alternate;
+}
+
+.cosmic.dance .arm.r{
+  animation:cosmicArmR 1.5s ease-in-out infinite alternate;
+}
+
+.cosmic.dance .leg.l{
+  animation:cosmicLegL 1.5s ease-in-out infinite alternate;
+}
+
+.cosmic.dance .leg.r{
+  animation:cosmicLegR 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes cosmicBody{
+  from{transform:translateY(8px) rotate(-4deg)}
+  to{transform:translateY(-14px) rotate(4deg)}
+}
+
+@keyframes cosmicArmL{
+  from{transform:rotate(-30deg)}
+  to{transform:rotate(-80deg)}
+}
+
+@keyframes cosmicArmR{
+  from{transform:rotate(30deg)}
+  to{transform:rotate(80deg)}
+}
+
+@keyframes cosmicLegL{
+  from{transform:rotate(10deg)}
+  to{transform:rotate(-15deg)}
+}
+
+@keyframes cosmicLegR{
+  from{transform:rotate(-10deg)}
+  to{transform:rotate(15deg)}
+}
+
+/* DRAGÃO */
+
+.dragon.dance .body{
+  animation:dragonBody .75s ease-in-out infinite alternate;
+}
+
+.dragon.dance .arm.l{
+  animation:dragonArmL .75s ease-in-out infinite alternate;
+}
+
+.dragon.dance .arm.r{
+  animation:dragonArmR .75s ease-in-out infinite alternate;
+}
+
+.dragon.dance .leg.l{
+  animation:dragonLegL .75s ease-in-out infinite alternate;
+}
+
+.dragon.dance .leg.r{
+  animation:dragonLegR .75s ease-in-out infinite alternate;
+}
+
+@keyframes dragonBody{
+  from{transform:rotate(-8deg) translateY(2px)}
+  to{transform:rotate(8deg) translateY(-8px)}
+}
+
+@keyframes dragonArmL{
+  from{transform:rotate(-50deg)}
+  to{transform:rotate(-115deg)}
+}
+
+@keyframes dragonArmR{
+  from{transform:rotate(50deg)}
+  to{transform:rotate(115deg)}
+}
+
+@keyframes dragonLegL{
+  from{transform:rotate(-20deg)}
+  to{transform:rotate(25deg)}
+}
+
+@keyframes dragonLegR{
+  from{transform:rotate(20deg)}
+  to{transform:rotate(-25deg)}
+}
+
+/* =========================================================
    SAÍDA
-===================================================== */
+   ========================================================= */
 
 .exit{
-  display:block!important;
-  animation:exitStage 1.35s cubic-bezier(.7,0,.9,.2) forwards;
-}
-
-.exit .arm.l{
-  animation:none;
-  transform:rotate(-35deg);
-}
-
-.exit .arm.r{
-  animation:none;
-  transform:rotate(35deg);
+  animation:exitStage 1.1s ease-in forwards !important;
 }
 
 @keyframes exitStage{
   0%{
+    transform:translateX(-50%) translateY(0) scale(1);
     opacity:1;
-    transform:
-      translate(-50%,0)
-      scale(1);
-  }
-
-  30%{
-    transform:
-      translate(-48%,-18px)
-      scale(1.04);
   }
 
   100%{
+    transform:translateX(420px) translateY(-30px) rotate(25deg) scale(.6);
     opacity:0;
-    transform:
-      translate(155%,30px)
-      rotate(12deg)
-      scale(.58);
   }
 }
 
-/* =====================================================
+/* =========================================================
    CONTROLES
-===================================================== */
+   ========================================================= */
 
 #controls{
-  padding:14px;
-
-  display:flex;
-  gap:8px;
+  width:100%;
+  padding:16px 10px 30px;
 
   background:#050505;
+
+  text-align:center;
 }
 
-#cmd{
-  flex:1;
-  min-width:0;
-
-  padding:14px;
-
-  color:white;
-  background:#111;
-
-  border:1px solid #333;
-  border-radius:12px;
-
-  outline:none;
+#controls h2{
+  margin:4px 0 14px;
+  font-size:18px;
 }
 
-#cmd:focus{
-  border-color:#7040ff;
+.buttons{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+  max-width:650px;
+  margin:auto;
 }
 
 button{
-  border:0;
-  border-radius:12px;
+  min-height:45px;
 
-  padding:0 16px;
+  border:1px solid #333;
+  border-radius:10px;
 
-  background:
-    linear-gradient(
-      90deg,
-      #6524ff,
-      #ff1744
-    );
-
+  background:#111;
   color:#fff;
+
   font-weight:bold;
-}
-
-/* =====================================================
-   TESTES
-===================================================== */
-
-#tests{
-  padding:12px;
-
-  display:flex;
-  flex-wrap:wrap;
-  gap:7px;
-
-  background:#050505;
-}
-
-.test{
-  padding:9px 11px;
-
-  border-radius:9px;
-
-  background:#151515;
-
-  border:1px solid #292929;
-
   font-size:12px;
+
+  cursor:pointer;
+
+  transition:.15s;
 }
 
-/* =====================================================
-   QUADRADOS
-===================================================== */
-
-#boxes{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:10px;
-
-  padding:12px;
-
-  background:#000;
+button:active{
+  transform:scale(.94);
+  background:#252525;
 }
 
-.box{
-  height:100px;
+/* =========================================================
+   RESPONSIVO
+   ========================================================= */
 
-  background:#000;
-
-  border:1px solid #202020;
-
-  border-radius:12px;
-}
-
-/* =====================================================
-   CELULAR
-===================================================== */
-
-@media(max-width:600px){
+@media(max-width:500px){
 
   #stage{
-    height:66vh;
-    min-height:430px;
+    height:68vh;
+    min-height:450px;
   }
 
   #character{
-    transform:translateX(-50%) scale(.82);
+    transform:translateX(-50%) scale(.9);
+    transform-origin:center bottom;
   }
 
-  #status{
-    font-size:12px;
+  .buttons{
+    grid-template-columns:repeat(2,1fr);
   }
 
-  .test{
-    font-size:11px;
+  #name{
+    font-size:16px;
   }
 }
+
 </style>
 </head>
 
 <body>
 
-<!-- ===================================================
-     PALCO
-=================================================== -->
-
 <div id="stage">
 
-  <div class="beam blue"></div>
-  <div class="beam red"></div>
-
   <div id="status">
-    🟢 LIVE Stage pronto
+    🟢 LIVE STAGE • PRONTO
   </div>
 
-  <div id="name"></div>
-
-  <!-- PERSONAGEM -->
   <div id="character">
 
     <div class="head">
       <div class="hair"></div>
-      <span class="eye l"></span>
-      <span class="eye r"></span>
+      <div class="eye l"></div>
+      <div class="eye r"></div>
     </div>
 
     <div class="body"></div>
@@ -1104,125 +1793,45 @@ button{
 
   </div>
 
+  <div id="name">
+    Aguardando presente...
+  </div>
+
 </div>
 
-<!-- ===================================================
-     COMANDO
-=================================================== -->
 
 <div id="controls">
 
-  <input
-    id="cmd"
-    placeholder="Digite um personagem..."
-  >
+<h2>🎁 TESTAR PERSONAGENS</h2>
 
-  <button onclick="testar()">
-    TESTAR
-  </button>
+<div class="buttons">
 
-</div>
-
-<!-- ===================================================
-     PERSONAGENS
-=================================================== -->
-
-<div id="tests">
-
-  <button class="test"
-    onclick="iniciarPorNome('homem aranha')">
-    🕷️ Aranha
-  </button>
-
-  <button class="test"
-    onclick="iniciarPorNome('hulk')">
-    💚 Hulk
-  </button>
-
-  <button class="test"
-    onclick="iniciarPorNome('batman')">
-    🦇 Batman
-  </button>
-
-  <button class="test"
-    onclick="iniciarPorNome('homem de ferro')">
-    🤖 Homem de Ferro
-  </button>
-
-  <button class="test"
-    onclick="iniciarPorNome('superman')">
-    🦸 Superman
-  </button>
-
-  <button class="test"
-    onclick="iniciarPorNome('flash')">
-    ⚡ Flash
-  </button>
-
-  <button class="test"
-    onclick="iniciarPorNome('capitao america')">
-    🛡️ Capitão
-  </button>
-
-  <button class="test"
-    onclick="iniciarPorNome('ninja')">
-    🥷 Ninja
-  </button>
-
-  <button class="test"
-    onclick="iniciarPorNome('robo')">
-    🤖 Robô
-  </button>
-
-  <button class="test"
-    onclick="iniciarPorNome('alien')">
-    👽 Alien
-  </button>
-
-  <button class="test"
-    onclick="iniciarPorNome('mago')">
-    🧙 Mago
-  </button>
-
-  <button class="test"
-    onclick="iniciarPorNome('ninja sombrio')">
-    🥷 Sombrio
-  </button>
-
-  <button class="test"
-    onclick="iniciarPorNome('titan')">
-    🤖 Titã
-  </button>
-
-  <button class="test"
-    onclick="iniciarPorNome('cosmico')">
-    🌌 Cósmico
-  </button>
-
-  <button class="test"
-    onclick="iniciarPorNome('dragao')">
-    🐲 Dragão
-  </button>
+<button onclick="iniciarPorNome('homem aranha')">🕷️ Aranha</button>
+<button onclick="iniciarPorNome('hulk')">💚 Hulk</button>
+<button onclick="iniciarPorNome('batman')">🦇 Batman</button>
+<button onclick="iniciarPorNome('homem de ferro')">🤖 Homem de Ferro</button>
+<button onclick="iniciarPorNome('superman')">🦸 Superman</button>
+<button onclick="iniciarPorNome('flash')">⚡ Flash</button>
+<button onclick="iniciarPorNome('capitao america')">🛡️ Capitão</button>
+<button onclick="iniciarPorNome('ninja')">🥷 Ninja</button>
+<button onclick="iniciarPorNome('robo')">🤖 Robô</button>
+<button onclick="iniciarPorNome('alien')">👽 Alien</button>
+<button onclick="iniciarPorNome('mago')">🧙 Mago</button>
+<button onclick="iniciarPorNome('ninja sombrio')">🌑 Ninja Sombrio</button>
+<button onclick="iniciarPorNome('titan')">⚙️ Titã</button>
+<button onclick="iniciarPorNome('cosmico')">🌌 Cósmico</button>
+<button onclick="iniciarPorNome('dragao')">🐉 Dragão</button>
 
 </div>
 
-<!-- ===================================================
-     QUADRADOS PRETOS
-=================================================== -->
-
-<div id="boxes">
-
-  <div class="box"></div>
-  <div class="box"></div>
-  <div class="box"></div>
-
 </div>
+
 
 <script>
 
-/* =====================================================
+/* =========================================================
    PERSONAGENS
-===================================================== */
+   ========================================================= */
 
 const personagens = {
 
@@ -1271,12 +1880,22 @@ const personagens = {
     classe:"cap"
   },
 
+  "capitão américa":{
+    nome:"Capitão América",
+    classe:"cap"
+  },
+
   "ninja":{
     nome:"Ninja Futurista",
     classe:"ninja"
   },
 
   "robo":{
+    nome:"Robô Futurista",
+    classe:"robot"
+  },
+
+  "robô":{
     nome:"Robô Futurista",
     classe:"robot"
   },
@@ -1301,7 +1920,17 @@ const personagens = {
     classe:"titan"
   },
 
+  "titã":{
+    nome:"Titã Robótico",
+    classe:"titan"
+  },
+
   "cosmico":{
+    nome:"Guerreiro Cósmico",
+    classe:"cosmic"
+  },
+
+  "cósmico":{
     nome:"Guerreiro Cósmico",
     classe:"cosmic"
   },
@@ -1309,164 +1938,28 @@ const personagens = {
   "dragao":{
     nome:"Dragão Guerreiro",
     classe:"dragon"
+  },
+
+  "dragão":{
+    nome:"Dragão Guerreiro",
+    classe:"dragon"
   }
 
 };
 
-/* =====================================================
-   NORMALIZAÇÃO
-===================================================== */
 
-function normalizar(texto){
+/* =========================================================
+   PRESENTES
+   ========================================================= */
 
-  return texto
-    .toLowerCase()
-    .trim()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g,"");
-
-}
-
-/* =====================================================
-   TESTAR
-===================================================== */
-
-function testar(){
-
-  const valor =
-    document.getElementById("cmd").value;
-
-  iniciarPorNome(valor);
-
-  document.getElementById("cmd").value="";
-
-}
-
-/* =====================================================
-   INICIAR POR NOME
-===================================================== */
-
-function iniciarPorNome(valor){
-
-  const chave=normalizar(valor);
-
-  const personagem=personagens[chave];
-
-  if(!personagem){
-
-    document.getElementById("status").textContent=
-      "❌ Personagem não encontrado";
-
-    return;
-  }
-
-  iniciar(personagem);
-
-}
-
-/* =====================================================
-   ANIMAÇÃO
-===================================================== */
-
-let ocupado=false;
-
-function iniciar(personagem){
-
-  if(ocupado){
-
-    document.getElementById("status").textContent=
-      "⏳ O palco está ocupado";
-
-    return;
-  }
-
-  ocupado=true;
-
-  const hero=
-    document.getElementById("character");
-
-  const name=
-    document.getElementById("name");
-
-  const status=
-    document.getElementById("status");
-
-  /* limpar animações anteriores */
-
-  hero.className="";
-
-  void hero.offsetWidth;
-
-  /* personagem */
-
-  hero.className=
-    personagem.classe+" enter";
-
-  name.textContent=
-    personagem.nome;
-
-  name.style.display="block";
-
-  status.textContent=
-    "🚪 "+personagem.nome+
-    " entrou no palco";
-
-  /* começa a dança */
-
-  setTimeout(()=>{
-
-    hero.className=
-      personagem.classe+" dance";
-
-    status.textContent=
-      "🔥 "+personagem.nome+
-      " está dançando!";
-
-  },1400);
-
-  /* saída */
-
-  setTimeout(()=>{
-
-    hero.className=
-      personagem.classe+" exit";
-
-    status.textContent=
-      "🚪 "+personagem.nome+
-      " está saindo...";
-
-  },6500);
-
-  /* reset */
-
-  setTimeout(()=>{
-
-    hero.style.display="none";
-
-    hero.className="";
-
-    name.style.display="none";
-
-    status.textContent=
-      "🟢 LIVE Stage pronto";
-
-    ocupado=false;
-
-  },7900);
-
-}
-
-/* =====================================================
-   PRESENTES DO TIKTOK
-===================================================== */
-
-const presentes={
+const presentes = {
 
   "rose":"homem aranha",
   "rosa":"homem aranha",
 
   "lion":"hulk",
   "leao":"hulk",
+  "leão":"hulk",
 
   "crown":"batman",
   "coroa":"batman",
@@ -1476,6 +1969,7 @@ const presentes={
 
   "heart":"superman",
   "coracao":"superman",
+  "coração":"superman",
 
   "lightning":"flash",
   "raio":"flash",
@@ -1487,59 +1981,164 @@ const presentes={
   "estrela":"mago",
 
   "dragon":"dragao",
-  "dragao":"dragao"
+  "dragao":"dragao",
+  "dragão":"dragao"
 
 };
 
-/* =====================================================
-   RECEBER PRESENTE
-===================================================== */
 
-function receberPresenteTikTok(nomePresente){
+/* =========================================================
+   ELEMENTOS
+   ========================================================= */
 
-  const chave=
-    normalizar(nomePresente);
+const hero = document.getElementById("character");
+const nameBox = document.getElementById("name");
+const statusBox = document.getElementById("status");
 
-  const personagem=
-    presentes[chave];
+let timerEntrada;
+let timerDanca;
+let timerSaida;
+let timerReset;
+
+
+/* =========================================================
+   INICIAR PERSONAGEM
+   ========================================================= */
+
+function iniciarPorNome(nome){
+
+  nome = String(nome)
+    .toLowerCase()
+    .trim();
+
+  const personagem = personagens[nome];
 
   if(!personagem){
 
-    document.getElementById("status").textContent=
-      "🎁 Presente recebido: "+
-      nomePresente;
-
+    nameBox.textContent = "Personagem não encontrado";
     return;
+
   }
 
-  iniciarPorNome(personagem);
+  iniciar(personagem);
 
 }
 
-/* =====================================================
-   ENTER NO TECLADO
-===================================================== */
 
-document
-  .getElementById("cmd")
-  .addEventListener(
-    "keydown",
-    e=>{
+/* =========================================================
+   ANIMAÇÃO
+   ========================================================= */
 
-      if(e.key==="Enter"){
-        testar();
-      }
+function iniciar(personagem){
 
-    }
-  );
+  clearTimeout(timerEntrada);
+  clearTimeout(timerDanca);
+  clearTimeout(timerSaida);
+  clearTimeout(timerReset);
 
-/* =====================================================
-   TESTE AUTOMÁTICO DO PRESENTE
+  hero.className = "";
 
-   No console:
-   receberPresenteTikTok("rosa");
+  void hero.offsetWidth;
 
-===================================================== */
+  hero.className = personagem.classe + " enter";
+
+  nameBox.textContent = personagem.nome;
+
+  statusBox.textContent =
+    "🟢 ENTRANDO • " + personagem.nome;
+
+  timerDanca = setTimeout(()=>{
+
+    hero.classList.remove("enter");
+    hero.classList.add("dance");
+
+    statusBox.textContent =
+      "🔥 DANÇANDO • " + personagem.nome;
+
+  },1250);
+
+
+  timerSaida = setTimeout(()=>{
+
+    hero.classList.remove("dance");
+    hero.classList.add("exit");
+
+    statusBox.textContent =
+      "🚪 SAINDO • " + personagem.nome;
+
+  },6500);
+
+
+  timerReset = setTimeout(()=>{
+
+    hero.className = "";
+
+    nameBox.textContent =
+      "Aguardando presente...";
+
+    statusBox.textContent =
+      "🟢 LIVE STAGE • PRONTO";
+
+  },7800);
+
+}
+
+
+/* =========================================================
+   PRESENTE DO TIKTOK
+   ========================================================= */
+
+function receberPresenteTikTok(nomePresente){
+
+  const nome = String(nomePresente)
+    .toLowerCase()
+    .trim();
+
+  const personagem =
+    presentes[nome];
+
+  if(personagem){
+
+    iniciarPorNome(personagem);
+
+  }else{
+
+    console.log(
+      "Presente sem personagem configurado:",
+      nomePresente
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   TESTE AUTOMÁTICO
+   ========================================================= */
+
+window.testarPresente = function(nome){
+
+  receberPresenteTikTok(nome);
+
+};
+
+
+/* =========================================================
+   MENSAGEM INICIAL
+   ========================================================= */
+
+console.log(
+  "LIVE Stage V9 carregado."
+);
+
+console.log(
+  "Use iniciarPorNome('hulk') para testar."
+);
+
+console.log(
+  "Use receberPresenteTikTok('rose') para testar presente."
+);
 
 </script>
 
