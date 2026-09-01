@@ -2,12 +2,16 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<meta name="theme-color" content="#03040a">
-<title>LIVE Stage V6</title>
+<meta name="viewport"
+content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+
+<title>LIVE Stage V8 • 3D</title>
 
 <style>
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+}
 
 html,body{
   margin:0;
@@ -19,1387 +23,1753 @@ html,body{
   overflow-x:hidden;
 }
 
-body{overscroll-behavior:none}
+body{
+  background:
+    radial-gradient(circle at 50% 0%,#15151d 0,#000 45%);
+}
+
+/* =========================
+   PALCO
+========================= */
 
 #stage{
   position:relative;
+  width:100%;
   height:72vh;
-  min-height:470px;
+  min-height:500px;
   overflow:hidden;
-  isolation:isolate;
+
   background:
-    radial-gradient(ellipse at 50% 58%,rgba(0,140,255,.20),transparent 36%),
-    linear-gradient(180deg,rgba(0,0,0,.05),rgba(0,0,0,.62)),
+    linear-gradient(
+      rgba(0,0,0,.15),
+      rgba(0,0,0,.58)
+    ),
     url("fundo.jpg") center/cover no-repeat;
+
+  border-bottom:1px solid #25252b;
 }
+
+/* brilho cinematográfico */
 
 #stage:before{
   content:"";
   position:absolute;
   inset:0;
-  background:
-    radial-gradient(ellipse at 50% 88%,rgba(0,160,255,.28),transparent 38%);
   pointer-events:none;
-  z-index:1;
+
+  background:
+    radial-gradient(
+      ellipse at center 55% 65%,
+      rgba(255,0,55,.18),
+      transparent 42%
+    ),
+    radial-gradient(
+      ellipse at center 35% 20%,
+      rgba(0,100,255,.12),
+      transparent 35%
+    );
 }
 
-#stage:after{
-  content:"";
-  position:absolute;
-  inset:0;
-  background:
-    linear-gradient(90deg,rgba(255,0,55,.10),transparent 22%,transparent 78%,rgba(0,150,255,.10));
-  pointer-events:none;
-  z-index:2;
-}
+/* =========================
+   LUZES
+========================= */
 
 .beam{
   position:absolute;
-  top:-40%;
-  height:180%;
-  width:24%;
-  filter:blur(18px);
-  opacity:.22;
-  mix-blend-mode:screen;
+  top:-30%;
+  width:18%;
+  height:170%;
+  opacity:.16;
+  filter:blur(22px);
   pointer-events:none;
-  z-index:3;
-  transform-origin:50% 0;
+  transform-origin:top center;
+  mix-blend-mode:screen;
 }
 
 .beam.blue{
-  left:0;
-  background:linear-gradient(90deg,transparent,#009cff,transparent);
-  animation:blueBeam 4s ease-in-out infinite alternate;
+  left:12%;
+  background:linear-gradient(
+    to bottom,
+    rgba(0,130,255,.9),
+    transparent
+  );
+  transform:rotate(18deg);
+  animation:lightMove 4s ease-in-out infinite alternate;
 }
 
 .beam.red{
-  right:0;
-  background:linear-gradient(90deg,transparent,#ff1744,transparent);
-  animation:redBeam 4.6s ease-in-out infinite alternate;
+  right:12%;
+  background:linear-gradient(
+    to bottom,
+    rgba(255,0,45,.9),
+    transparent
+  );
+  transform:rotate(-18deg);
+  animation:lightMove2 4.7s ease-in-out infinite alternate;
 }
 
-@keyframes blueBeam{
-  from{transform:rotate(7deg)}
-  to{transform:rotate(22deg)}
+@keyframes lightMove{
+  from{transform:rotate(10deg)}
+  to{transform:rotate(25deg)}
 }
 
-@keyframes redBeam{
-  from{transform:rotate(-7deg)}
-  to{transform:rotate(-22deg)}
+@keyframes lightMove2{
+  from{transform:rotate(-10deg)}
+  to{transform:rotate(-25deg)}
 }
 
-#spotlight{
-  position:absolute;
-  left:50%;
-  bottom:-8%;
-  width:65%;
-  height:60%;
-  transform:translateX(-50%);
-  background:radial-gradient(ellipse,rgba(255,255,255,.20),rgba(0,150,255,.10) 35%,transparent 70%);
-  filter:blur(15px);
-  z-index:4;
-}
-
-#floorGlow{
-  position:absolute;
-  left:50%;
-  bottom:6%;
-  width:340px;
-  height:100px;
-  transform:translateX(-50%);
-  border-radius:50%;
-  background:radial-gradient(ellipse,rgba(0,180,255,.65),rgba(0,70,255,.12) 45%,transparent 72%);
-  filter:blur(11px);
-  z-index:5;
-}
-
-#hud{
-  position:absolute;
-  top:max(12px,env(safe-area-inset-top));
-  left:12px;
-  right:12px;
-  display:flex;
-  justify-content:space-between;
-  z-index:90;
-  pointer-events:none;
-}
-
-.pill{
-  padding:8px 13px;
-  border-radius:999px;
-  background:rgba(0,0,0,.68);
-  border:1px solid rgba(255,255,255,.15);
-  backdrop-filter:blur(12px);
-  font-size:12px;
-  font-weight:900;
-}
-
-.liveDot{
-  display:inline-block;
-  width:7px;
-  height:7px;
-  margin-right:6px;
-  border-radius:50%;
-  background:#ff1744;
-  box-shadow:0 0 14px #ff1744;
-  animation:liveDot 1s infinite;
-}
-
-@keyframes liveDot{
-  50%{transform:scale(1.5);opacity:.45}
-}
+/* =========================
+   STATUS
+========================= */
 
 #status{
   position:absolute;
-  top:62px;
+  top:16px;
   left:50%;
   transform:translateX(-50%);
-  z-index:90;
-  max-width:88%;
-  padding:9px 17px;
+
+  z-index:100;
+
+  padding:10px 18px;
   border-radius:999px;
-  background:rgba(0,0,0,.72);
+
+  background:rgba(5,5,8,.78);
+  backdrop-filter:blur(14px);
+
   border:1px solid rgba(255,255,255,.15);
-  backdrop-filter:blur(12px);
-  font-size:12px;
-  font-weight:900;
+
+  box-shadow:
+    0 8px 30px rgba(0,0,0,.35);
+
+  font-size:13px;
+  font-weight:bold;
   white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
 }
+
+/* =========================
+   NOME
+========================= */
 
 #name{
   position:absolute;
   left:50%;
-  bottom:23%;
-  z-index:80;
-  transform:translate(-50%,18px) scale(.9);
-  padding:9px 18px;
-  border-radius:13px;
-  background:rgba(0,0,0,.88);
-  border:1px solid rgba(255,255,255,.20);
-  box-shadow:0 8px 30px rgba(0,0,0,.5),0 0 25px rgba(0,150,255,.15);
-  font-size:14px;
-  font-weight:900;
-  opacity:0;
-  transition:.4s;
-  white-space:nowrap;
-}
-
-#name.show{
-  opacity:1;
-  transform:translate(-50%,0) scale(1);
-}
-
-#shadow{
-  position:absolute;
-  left:50%;
-  bottom:10%;
-  width:110px;
-  height:23px;
-  transform:translateX(-50%) scale(.5);
-  border-radius:50%;
-  background:rgba(0,0,0,.82);
-  filter:blur(7px);
-  opacity:0;
-  z-index:12;
-  transition:.4s;
-}
-
-/* PERSONAGEM */
-
-#character{
-  position:absolute;
-  left:50%;
-  bottom:10%;
-  width:190px;
-  height:330px;
-  display:none;
-  z-index:30;
-  transform-origin:50% 100%;
-  will-change:transform,opacity;
-  filter:drop-shadow(0 18px 14px rgba(0,0,0,.58));
-}
-
-.head{
-  position:absolute;
-  left:62px;
-  top:0;
-  width:66px;
-  height:70px;
-  border-radius:46%;
-  z-index:6;
-  box-shadow:inset -9px -10px 15px rgba(0,0,0,.35),inset 7px 5px 12px rgba(255,255,255,.08);
-}
-
-.body{
-  position:absolute;
-  left:51px;
-  top:60px;
-  width:88px;
-  height:112px;
-  border-radius:27px 27px 20px 20px;
-  z-index:5;
-  box-shadow:inset -13px -11px 18px rgba(0,0,0,.32),inset 8px 5px 12px rgba(255,255,255,.08);
-}
-
-.arm{
-  position:absolute;
-  top:70px;
-  width:24px;
-  height:110px;
-  border-radius:22px;
-  transform-origin:50% 10px;
-  z-index:4;
-}
-
-.arm.l{left:27px}
-.arm.r{right:27px}
-
-.leg{
-  position:absolute;
-  top:164px;
-  width:29px;
-  height:124px;
-  border-radius:21px;
-  transform-origin:50% 9px;
-  z-index:3;
-}
-
-.leg.l{left:56px}
-.leg.r{right:56px}
-
-.eye{
-  position:absolute;
-  top:28px;
-  width:21px;
-  height:12px;
-  background:#fff;
-  border-radius:70% 25%;
-  box-shadow:0 0 11px #fff;
-}
-
-.eye.l{left:12px;transform:rotate(-17deg)}
-.eye.r{right:12px;transform:rotate(17deg)}
-
-.emblem{
-  position:absolute;
-  left:50%;
-  top:27px;
+  bottom:11%;
   transform:translateX(-50%);
-  font-size:30px;
-  font-weight:1000;
-  text-shadow:0 2px 8px #000;
+
+  z-index:100;
+
+  padding:9px 18px;
+
+  border-radius:14px;
+
+  background:rgba(0,0,0,.78);
+  border:1px solid rgba(255,255,255,.18);
+
+  backdrop-filter:blur(12px);
+
+  font-size:15px;
+  font-weight:800;
+
+  display:none;
+
+  box-shadow:
+    0 10px 35px rgba(0,0,0,.5);
 }
 
-/* CAMINHADA */
+/* =========================
+   CONTAINER 3D
+========================= */
 
-#character.walk .arm.l{
-  animation:walkL .34s infinite alternate ease-in-out;
+#character3d{
+  position:absolute;
+  inset:0;
+  z-index:30;
+
+  pointer-events:none;
+
+  opacity:0;
 }
 
-#character.walk .arm.r{
-  animation:walkR .34s infinite alternate ease-in-out;
+#character3d canvas{
+  display:block;
+  width:100%!important;
+  height:100%!important;
 }
 
-#character.walk .leg.l{
-  animation:legL .34s infinite alternate ease-in-out;
+/* =========================
+   EFEITO ENTRADA
+========================= */
+
+#character3d.enter{
+  animation:
+    characterEnter 1.25s cubic-bezier(.16,.9,.2,1)
+    forwards;
 }
 
-#character.walk .leg.r{
-  animation:legR .34s infinite alternate ease-in-out;
+@keyframes characterEnter{
+
+  0%{
+    opacity:0;
+    transform:
+      translateX(-45vw)
+      translateY(50px)
+      scale(.65);
+  }
+
+  60%{
+    opacity:1;
+    transform:
+      translateX(25px)
+      translateY(-8px)
+      scale(1.05);
+  }
+
+  100%{
+    opacity:1;
+    transform:
+      translateX(0)
+      translateY(0)
+      scale(1);
+  }
 }
 
-@keyframes walkL{
-  from{transform:rotate(28deg)}
-  to{transform:rotate(-28deg)}
-}
+/* =========================
+   DANÇA
+========================= */
 
-@keyframes walkR{
-  from{transform:rotate(-28deg)}
-  to{transform:rotate(28deg)}
-}
-
-@keyframes legL{
-  from{transform:rotate(-18deg)}
-  to{transform:rotate(18deg)}
-}
-
-@keyframes legR{
-  from{transform:rotate(18deg)}
-  to{transform:rotate(-18deg)}
-}
-
-/* DANÇA */
-
-#character.dance .arm.l{
-  animation:danceArmL .48s infinite alternate ease-in-out;
-}
-
-#character.dance .arm.r{
-  animation:danceArmR .48s infinite alternate ease-in-out;
-}
-
-#character.dance .leg.l{
-  animation:danceLegL .48s infinite alternate ease-in-out;
-}
-
-#character.dance .leg.r{
-  animation:danceLegR .48s infinite alternate ease-in-out;
-}
-
-#character.dance .body{
-  animation:danceBody .48s infinite alternate ease-in-out;
-}
-
-#character.dance .head{
-  animation:danceHead .48s infinite alternate ease-in-out;
-}
-
-@keyframes danceArmL{
-  0%{transform:rotate(-48deg) translateY(0)}
-  50%{transform:rotate(20deg) translateY(-13px)}
-  100%{transform:rotate(58deg) translateY(-5px)}
-}
-
-@keyframes danceArmR{
-  0%{transform:rotate(48deg) translateY(-5px)}
-  50%{transform:rotate(-20deg) translateY(-13px)}
-  100%{transform:rotate(-58deg) translateY(0)}
-}
-
-@keyframes danceLegL{
-  0%{transform:rotate(15deg)}
-  50%{transform:rotate(-10deg) translateY(-6px)}
-  100%{transform:rotate(18deg)}
-}
-
-@keyframes danceLegR{
-  0%{transform:rotate(-15deg)}
-  50%{transform:rotate(10deg) translateY(-6px)}
-  100%{transform:rotate(-18deg)}
+#character3d.dance{
+  opacity:1;
+  animation:
+    danceBody .48s ease-in-out infinite alternate;
 }
 
 @keyframes danceBody{
-  0%{transform:translateY(0) rotate(-3deg) scale(1)}
-  50%{transform:translateY(-11px) rotate(3deg) scale(1.035)}
-  100%{transform:translateY(0) rotate(-2deg) scale(1)}
-}
 
-@keyframes danceHead{
-  0%{transform:rotate(-5deg)}
-  50%{transform:rotate(6deg) translateY(-3px)}
-  100%{transform:rotate(-3deg)}
-}
-
-/* ENTRADA */
-
-#character.enter{
-  display:block!important;
-  animation:enter 1.6s cubic-bezier(.12,.82,.18,1) forwards;
-}
-
-@keyframes enter{
   0%{
-    transform:translateX(-230%) translateY(28px) scale(.38);
-    opacity:0;
-    filter:blur(7px) drop-shadow(0 18px 14px rgba(0,0,0,.4));
+    transform:
+      translateY(0)
+      rotate(-2deg)
+      scale(1);
   }
-  25%{opacity:1}
-  65%{
-    transform:translateX(-37%) translateY(-5px) scale(1.06);
-    filter:blur(0) drop-shadow(0 18px 14px rgba(0,0,0,.58));
+
+  50%{
+    transform:
+      translateY(-13px)
+      rotate(3deg)
+      scale(1.025);
   }
+
   100%{
-    transform:translateX(-50%) translateY(0) scale(1);
-    opacity:1;
+    transform:
+      translateY(0)
+      rotate(-3deg)
+      scale(1);
   }
 }
 
-/* POSE */
+/* =========================
+   SAÍDA
+========================= */
 
-#character.pose{
-  animation:pose .8s ease-in-out;
+#character3d.exit{
+  opacity:1;
+
+  animation:
+    characterExit 1.25s cubic-bezier(.7,0,.9,.2)
+    forwards;
 }
 
-#character.pose .arm.l{
-  transform:rotate(-48deg);
-}
+@keyframes characterExit{
 
-#character.pose .arm.r{
-  transform:rotate(48deg);
-}
-
-#character.pose .body{
-  transform:translateY(-6px) scale(1.04);
-}
-
-@keyframes pose{
-  0%{transform:translateX(-50%) scale(1)}
-  50%{transform:translateX(-50%) translateY(-13px) scale(1.07)}
-  100%{transform:translateX(-50%) scale(1)}
-}
-
-/* SAÍDA */
-
-#character.exit{
-  animation:exit 1.55s cubic-bezier(.72,0,.88,.22) forwards;
-}
-
-@keyframes exit{
   0%{
-    transform:translateX(-50%) translateY(0) scale(1);
     opacity:1;
+    transform:
+      translateX(0)
+      translateY(0)
+      scale(1);
   }
-  30%{
-    transform:translateX(-18%) translateY(-3px) scale(.97);
-    opacity:1;
-  }
+
   100%{
-    transform:translateX(190%) translateY(12px) scale(.46);
     opacity:0;
-    filter:blur(4px) drop-shadow(0 15px 12px rgba(0,0,0,.4));
+    transform:
+      translateX(48vw)
+      translateY(30px)
+      scale(.65);
   }
 }
 
-/* PERSONAGENS */
-
-.spider .head,
-.spider .body,
-.spider .arm,
-.spider .leg{
-  background:linear-gradient(145deg,#17191f,#07080b 46%,#81091b 47%,#d20b2d 67%,#08090c 68%);
-  border:1px solid #ff2848;
-}
-
-.spider .body:after{
-  content:"✦";
-  position:absolute;
-  left:50%;
-  top:26px;
-  transform:translateX(-50%);
-  color:#ff304d;
-  font-size:40px;
-}
-
-.hulk .head,
-.hulk .body,
-.hulk .arm{
-  background:linear-gradient(145deg,#83d354,#3b8438 55%,#1d4827);
-}
-
-.hulk .leg{background:linear-gradient(#393942,#15151a)}
-
-.batman .head,
-.batman .body,
-.batman .arm,
-.batman .leg{
-  background:linear-gradient(145deg,#3c414b,#17191e 50%,#050507);
-  border:1px solid #626979;
-}
-
-.batman .emblem{color:#e1e3e8}
-
-.iron .head,
-.iron .body,
-.iron .arm,
-.iron .leg{
-  background:linear-gradient(145deg,#ffd64c,#a80d18 29%,#d81727 60%,#5b070c);
-  border:1px solid #ffe071;
-}
-
-.iron .emblem{
-  color:#79edff;
-  text-shadow:0 0 15px #79edff;
-}
-
-.superman .head{background:#bd805f}
-
-.superman .body,
-.superman .arm{
-  background:linear-gradient(#1f6fc9,#0d3f80);
-}
-
-.superman .leg{background:#19253d}
-
-.superman .emblem{
-  color:#ffd52b;
-  font-size:38px;
-}
-
-.flash .head,
-.flash .body,
-.flash .arm,
-.flash .leg{
-  background:linear-gradient(145deg,#ef2635,#970d16 55%,#4d0509);
-}
-
-.flash .emblem{
-  color:#ffd93d;
-  text-shadow:0 0 15px #ffd93d;
-}
-
-.cap .head{background:#bd805f}
-
-.cap .body,
-.cap .arm{
-  background:linear-gradient(#2865ae,#102f5b);
-}
-
-.cap .leg{background:#262c3d}
-
-.ninja .head,
-.ninja .body,
-.ninja .arm,
-.ninja .leg{
-  background:linear-gradient(145deg,#333743,#090a0e);
-  border:1px solid #626bb0;
-}
-
-.ninja .emblem{
-  color:#72ddff;
-  text-shadow:0 0 16px #72ddff;
-}
-
-.robot .head,
-.robot .body,
-.robot .arm,
-.robot .leg{
-  background:linear-gradient(145deg,#dce4eb,#697580 45%,#252c35);
-  border:2px solid #7eeeff;
-}
-
-.robot .emblem{
-  color:#7eeeff;
-  text-shadow:0 0 17px #7eeeff;
-}
-
-.alien .head{
-  background:radial-gradient(ellipse at 40% 35%,#b7ffb8,#4ac96e 50%,#12633c);
-}
-
-.alien .body,
-.alien .arm,
-.alien .leg{
-  background:linear-gradient(#267f50,#0e3c27);
-}
-
-.mage .head{background:#725145}
-
-.mage .body,
-.mage .arm,
-.mage .leg{
-  background:linear-gradient(145deg,#7c2aab,#2c084d);
-  border:1px solid #c06ff2;
-}
-
-.mage .emblem{
-  color:#df9cff;
-  text-shadow:0 0 18px #df9cff;
-}
-
-.darkninja .head,
-.darkninja .body,
-.darkninja .arm,
-.darkninja .leg{
-  background:linear-gradient(145deg,#25252c,#020203);
-  border:1px solid #722bab;
-}
-
-.darkninja .emblem{
-  color:#c85cff;
-  text-shadow:0 0 18px #c85cff;
-}
-
-.titan .head,
-.titan .body,
-.titan .arm,
-.titan .leg{
-  background:linear-gradient(145deg,#8d9bad,#353f4e 50%,#121722);
-  border:2px solid #afc1ff;
-}
-
-.cosmic .head{
-  background:linear-gradient(145deg,#8cf3ff,#514ac2);
-}
-
-.cosmic .body,
-.cosmic .arm,
-.cosmic .leg{
-  background:linear-gradient(145deg,#3048bf,#17094e);
-}
-
-.cosmic .emblem{
-  color:#8fffff;
-  text-shadow:0 0 18px #8fffff;
-}
-
-.dragon .head,
-.dragon .body,
-.dragon .arm,
-.dragon .leg{
-  background:linear-gradient(145deg,#e14b2d,#8d1710 50%,#350705);
-  border:1px solid #ff7955;
-}
-
-.dragon .emblem{
-  color:#ffca55;
-}
-
-/* PARTICULAS */
-
-.particle{
-  position:absolute;
-  width:5px;
-  height:5px;
-  border-radius:50%;
-  background:#fff;
-  box-shadow:0 0 14px #fff;
-  z-index:25;
-  pointer-events:none;
-  animation:particle .95s ease-out forwards;
-}
-
-@keyframes particle{
-  to{
-    transform:translate(var(--x),var(--y)) scale(.1);
-    opacity:0;
-  }
-}
-
-/* CONTROLES */
+/* =========================
+   CONTROLES
+========================= */
 
 #controls{
+  padding:13px;
+
   display:flex;
   gap:8px;
-  padding:12px;
-  background:linear-gradient(#08080c,#030303);
-  border-top:1px solid rgba(255,255,255,.07);
+
+  background:
+    linear-gradient(#070709,#030303);
+
+  border-bottom:1px solid #17171b;
 }
 
 #cmd{
   flex:1;
   min-width:0;
-  padding:14px;
-  color:#fff;
-  background:#111118;
-  border:1px solid #30303b;
+
+  padding:14px 15px;
+
   border-radius:13px;
+
+  background:#111216;
+  color:white;
+
+  border:1px solid #303139;
   outline:none;
+
+  font-size:14px;
 }
 
-#cmd:focus{border-color:#7979ff}
+#cmd:focus{
+  border-color:#8b3dff;
+  box-shadow:0 0 0 3px rgba(130,50,255,.12);
+}
 
 button{
   border:0;
-  color:#fff;
-  font-weight:900;
-  border-radius:12px;
-  background:linear-gradient(135deg,#7128ff,#ff1744);
+  color:white;
+
+  font-weight:800;
+
+  cursor:pointer;
+
+  transition:
+    transform .15s,
+    filter .15s;
 }
 
-#mainButton{padding:0 17px}
+button:active{
+  transform:scale(.95);
+}
+
+/* =========================
+   BOTÃO TESTAR
+========================= */
+
+#mainTest{
+  padding:0 18px;
+
+  border-radius:13px;
+
+  background:
+    linear-gradient(
+      100deg,
+      #6b25ff,
+      #e40042
+    );
+
+  box-shadow:
+    0 8px 25px rgba(105,20,255,.22);
+}
+
+/* =========================
+   TESTES
+========================= */
 
 #tests{
-  padding:10px 12px;
-  display:flex;
-  gap:7px;
-  overflow-x:auto;
-  background:#050505;
-  scrollbar-width:none;
-}
+  padding:12px;
 
-#tests::-webkit-scrollbar{display:none}
+  display:flex;
+  flex-wrap:wrap;
+  gap:7px;
+
+  background:#050506;
+}
 
 .test{
-  flex:0 0 auto;
   padding:9px 11px;
-  background:#121218;
-  border:1px solid #292934;
+
+  border-radius:10px;
+
+  background:#121317;
+
+  border:1px solid #292a30;
+
   font-size:12px;
 }
 
-#queue{
-  padding:10px 12px;
-  background:#070709;
-  color:#aaa;
-  font-size:12px;
-  border-top:1px solid #15151a;
+.test:hover{
+  filter:brightness(1.3);
 }
 
-#queue strong{color:#fff}
+/* =========================
+   3 QUADRADOS
+========================= */
 
 #boxes{
   display:grid;
-  grid-template-columns:repeat(3,1fr);
+  grid-template-columns:
+    repeat(3,1fr);
+
   gap:10px;
+
   padding:12px;
+
   background:#000;
 }
 
 .box{
-  height:105px;
+  height:100px;
+
   background:#000;
-  border:1px solid #18181d;
+
+  border:1px solid #1c1c21;
+
   border-radius:13px;
+
+  box-shadow:
+    inset 0 0 20px rgba(255,255,255,.015);
 }
+
+/* =========================
+   CELULAR
+========================= */
 
 @media(max-width:600px){
 
   #stage{
     height:67vh;
-    min-height:440px;
-  }
-
-  #character{
-    transform:translateX(-50%) scale(.80);
+    min-height:430px;
   }
 
   #status{
-    top:56px;
+    top:12px;
     font-size:11px;
+    padding:8px 13px;
   }
 
   #name{
-    bottom:22%;
+    bottom:9%;
     font-size:13px;
   }
 
-  #floorGlow{width:280px}
+  #controls{
+    padding:10px;
+  }
+
+  #cmd{
+    font-size:13px;
+  }
+
+  #mainTest{
+    padding:0 13px;
+  }
+
+  .test{
+    font-size:11px;
+  }
+
+  .box{
+    height:82px;
+  }
 }
 </style>
 </head>
 
 <body>
 
+<!-- =========================
+     PALCO
+========================= -->
+
 <div id="stage">
 
   <div class="beam blue"></div>
   <div class="beam red"></div>
 
-  <div id="spotlight"></div>
-  <div id="floorGlow"></div>
-  <div id="shadow"></div>
-
-  <div id="hud">
-    <div class="pill">
-      <span class="liveDot"></span>
-      LIVE STAGE
-    </div>
-
-    <div class="pill" id="counter">
-      0 personagens
-    </div>
+  <div id="status">
+    🟢 LIVE Stage • Pronto
   </div>
-
-  <div id="status">🟢 LIVE Stage pronto</div>
 
   <div id="name"></div>
 
-  <div id="character">
-
-    <div class="head">
-      <span class="eye l"></span>
-      <span class="eye r"></span>
-    </div>
-
-    <div class="body">
-      <span class="emblem"></span>
-    </div>
-
-    <div class="arm l"></div>
-    <div class="arm r"></div>
-
-    <div class="leg l"></div>
-    <div class="leg r"></div>
-
-  </div>
+  <div id="character3d"></div>
 
 </div>
+
+
+<!-- =========================
+     CONTROLE
+========================= -->
 
 <div id="controls">
 
   <input
     id="cmd"
-    placeholder="Digite um personagem..."
     autocomplete="off"
+    placeholder="Digite um personagem..."
   >
 
-  <button id="mainButton" onclick="testar()">
+  <button
+    id="mainTest"
+    onclick="testar()">
     TESTAR
   </button>
 
 </div>
 
-<div id="tests"></div>
 
-<div id="queue">
-  Fila:
-  <strong id="queueText">vazia</strong>
+<!-- =========================
+     PERSONAGENS
+========================= -->
+
+<div id="tests">
+
+  <button class="test"
+    onclick="iniciarPorNome('homem aranha')">
+    🕷️ Aranha
+  </button>
+
+  <button class="test"
+    onclick="iniciarPorNome('hulk')">
+    💚 Hulk
+  </button>
+
+  <button class="test"
+    onclick="iniciarPorNome('batman')">
+    🦇 Batman
+  </button>
+
+  <button class="test"
+    onclick="iniciarPorNome('homem de ferro')">
+    🤖 Homem de Ferro
+  </button>
+
+  <button class="test"
+    onclick="iniciarPorNome('superman')">
+    🦸 Superman
+  </button>
+
+  <button class="test"
+    onclick="iniciarPorNome('flash')">
+    ⚡ Flash
+  </button>
+
+  <button class="test"
+    onclick="iniciarPorNome('capitao america')">
+    🛡️ Capitão
+  </button>
+
+  <button class="test"
+    onclick="iniciarPorNome('ninja')">
+    🥷 Ninja
+  </button>
+
+  <button class="test"
+    onclick="iniciarPorNome('robo')">
+    🤖 Robô
+  </button>
+
+  <button class="test"
+    onclick="iniciarPorNome('alien')">
+    👽 Alien
+  </button>
+
+  <button class="test"
+    onclick="iniciarPorNome('mago')">
+    🧙 Mago
+  </button>
+
+  <button class="test"
+    onclick="iniciarPorNome('ninja sombrio')">
+    🌑 Ninja Sombrio
+  </button>
+
+  <button class="test"
+    onclick="iniciarPorNome('titan')">
+    🦾 Titã
+  </button>
+
+  <button class="test"
+    onclick="iniciarPorNome('cosmico')">
+    🌌 Cósmico
+  </button>
+
+  <button class="test"
+    onclick="iniciarPorNome('dragao')">
+    🐲 Dragão
+  </button>
+
 </div>
+
+
+<!-- =========================
+     3 QUADRADOS PRETOS
+========================= -->
 
 <div id="boxes">
+
   <div class="box"></div>
   <div class="box"></div>
   <div class="box"></div>
+
 </div>
+
+
+<!-- =========================
+     THREE.JS
+========================= -->
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+
 
 <script>
 
-/* =========================================================
-   PERSONAGENS
-========================================================= */
+/* =====================================================
+   CONFIGURAÇÃO
+===================================================== */
 
-const personagens={
+const personagens = {
 
   "homem aranha":{
     nome:"Aranha Urbano",
-    classe:"spider",
-    emoji:"🕷️"
+    tipo:"spider"
   },
 
   "aranha urbano":{
     nome:"Aranha Urbano",
-    classe:"spider",
-    emoji:"🕷️"
+    tipo:"spider"
   },
 
-  hulk:{
+  "hulk":{
     nome:"Hulk",
-    classe:"hulk",
-    emoji:"💚"
+    tipo:"hulk"
   },
 
-  batman:{
+  "batman":{
     nome:"Batman",
-    classe:"batman",
-    emoji:"🦇"
+    tipo:"batman"
   },
 
   "homem de ferro":{
     nome:"Homem de Ferro",
-    classe:"iron",
-    emoji:"🤖"
+    tipo:"iron"
   },
 
-  superman:{
+  "superman":{
     nome:"Superman",
-    classe:"superman",
-    emoji:"🦸"
+    tipo:"superman"
   },
 
   "super man":{
     nome:"Superman",
-    classe:"superman",
-    emoji:"🦸"
+    tipo:"superman"
   },
 
-  flash:{
+  "flash":{
     nome:"Flash",
-    classe:"flash",
-    emoji:"⚡"
+    tipo:"flash"
   },
 
   "capitao america":{
     nome:"Capitão América",
-    classe:"cap",
-    emoji:"🛡️"
+    tipo:"captain"
   },
 
-  ninja:{
+  "ninja":{
     nome:"Ninja Futurista",
-    classe:"ninja",
-    emoji:"🥷"
+    tipo:"ninja"
   },
 
-  robo:{
+  "robo":{
     nome:"Robô Futurista",
-    classe:"robot",
-    emoji:"🤖"
+    tipo:"robot"
   },
 
-  alien:{
+  "alien":{
     nome:"Alienígena",
-    classe:"alien",
-    emoji:"👽"
+    tipo:"alien"
   },
 
-  mago:{
+  "mago":{
     nome:"Mago Arcano",
-    classe:"mage",
-    emoji:"🧙"
+    tipo:"mage"
   },
 
   "ninja sombrio":{
     nome:"Ninja Sombrio",
-    classe:"darkninja",
-    emoji:"🥷"
+    tipo:"darkninja"
   },
 
-  titan:{
+  "titan":{
     nome:"Titã Robótico",
-    classe:"titan",
-    emoji:"🤖"
+    tipo:"titan"
   },
 
-  cosmico:{
-    nome:"Alienígena Cósmico",
-    classe:"cosmic",
-    emoji:"👽"
+  "cosmico":{
+    nome:"Guerreiro Cósmico",
+    tipo:"cosmic"
   },
 
-  dragao:{
+  "dragao":{
     nome:"Dragão Guerreiro",
-    classe:"dragon",
-    emoji:"🐲"
+    tipo:"dragon"
   }
 
 };
 
 
-/* =========================================================
-   PRESENTES
-========================================================= */
+/* =====================================================
+   PRESENTES → PERSONAGENS
+===================================================== */
 
-const presentes={
+const presentes = {
 
-  rosa:"homem aranha",
-  rose:"homem aranha",
+  "rose":"homem aranha",
+  "rosa":"homem aranha",
 
-  leao:"hulk",
-  lion:"hulk",
+  "lion":"hulk",
+  "leao":"hulk",
 
-  coroa:"batman",
-  crown:"batman",
+  "crown":"batman",
+  "coroa":"batman",
 
-  foguete:"homem de ferro",
-  rocket:"homem de ferro",
+  "rocket":"homem de ferro",
+  "foguete":"homem de ferro",
 
-  coracao:"superman",
-  heart:"superman",
+  "heart":"superman",
+  "coracao":"superman",
 
-  raio:"flash",
-  lightning:"flash",
+  "lightning":"flash",
+  "raio":"flash",
 
-  escudo:"capitao america",
-  shield:"capitao america",
+  "shield":"capitao america",
+  "escudo":"capitao america",
 
-  estrela:"mago",
-  star:"mago",
+  "star":"mago",
+  "estrela":"mago",
 
-  dragao:"dragao",
-  dragon:"dragao"
+  "dragon":"dragao",
+  "dragao":"dragao",
 
+  "ninja":"ninja",
+  "alien":"alien",
+
+  "robot":"robo",
+  "robo":"robo"
 };
 
 
-/* =========================================================
-   ELEMENTOS
-========================================================= */
+/* =====================================================
+   THREE
+===================================================== */
 
-const hero=document.getElementById("character");
-const nameEl=document.getElementById("name");
-const statusEl=document.getElementById("status");
-const shadow=document.getElementById("shadow");
-const counter=document.getElementById("counter");
-const queueText=document.getElementById("queueText");
+let scene;
+let camera;
+let renderer;
+let personagemAtual;
 
 let ocupado=false;
-let total=0;
-let fila=[];
+
+let clock;
+
+const container =
+  document.getElementById("character3d");
 
 
-/* =========================================================
-   NORMALIZA
-========================================================= */
+/* =====================================================
+   INICIAR 3D
+===================================================== */
 
-function normalizar(texto){
+function iniciar3D(){
 
-  return String(texto||"")
-    .toLowerCase()
-    .trim()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g,"");
+  scene =
+    new THREE.Scene();
 
-}
-
-
-/* =========================================================
-   PARTICULAS
-========================================================= */
-
-function particulas(){
-
-  const stage=document.getElementById("stage");
-
-  for(let i=0;i<28;i++){
-
-    const p=document.createElement("span");
-
-    p.className="particle";
-
-    p.style.left=
-      (50+(Math.random()*25-12.5))+"%";
-
-    p.style.top=
-      (70+(Math.random()*10-5))+"%";
-
-    p.style.setProperty(
-      "--x",
-      (Math.random()*240-120)+"px"
+  camera =
+    new THREE.PerspectiveCamera(
+      35,
+      window.innerWidth /
+      window.innerHeight,
+      .1,
+      100
     );
 
-    p.style.setProperty(
-      "--y",
-      (Math.random()*-180)+"px"
+  camera.position.set(
+    0,
+    2.2,
+    7
+  );
+
+
+  renderer =
+    new THREE.WebGLRenderer({
+      antialias:true,
+      alpha:true
+    });
+
+  renderer.setPixelRatio(
+    Math.min(
+      window.devicePixelRatio,
+      2
+    )
+  );
+
+  renderer.setSize(
+    window.innerWidth,
+    document.getElementById("stage").clientHeight
+  );
+
+  renderer.shadowMap.enabled=true;
+
+  container.appendChild(
+    renderer.domElement
+  );
+
+
+  /* iluminação */
+
+  const ambient =
+    new THREE.HemisphereLight(
+      0xffffff,
+      0x202030,
+      2
     );
 
-    stage.appendChild(p);
+  scene.add(ambient);
 
-    setTimeout(()=>p.remove(),1000);
 
-  }
+  const key =
+    new THREE.DirectionalLight(
+      0xffffff,
+      4
+    );
 
+  key.position.set(
+    3,
+    7,
+    5
+  );
+
+  key.castShadow=true;
+
+  scene.add(key);
+
+
+  const red =
+    new THREE.PointLight(
+      0xff003c,
+      35,
+      12
+    );
+
+  red.position.set(
+    -4,
+    3,
+    2
+  );
+
+  scene.add(red);
+
+
+  const blue =
+    new THREE.PointLight(
+      0x168cff,
+      35,
+      12
+    );
+
+  blue.position.set(
+    4,
+    3,
+    2
+  );
+
+  scene.add(blue);
+
+
+  clock =
+    new THREE.Clock();
+
+
+  window.addEventListener(
+    "resize",
+    redimensionar
+  );
+
+
+  animar();
 }
 
 
-/* =========================================================
-   FILA
-========================================================= */
+/* =====================================================
+   MATERIAL
+===================================================== */
 
-function atualizarFila(){
+function material(cor,metal=0){
 
-  queueText.textContent=
-    fila.length
-      ? fila.map(p=>p.emoji+" "+p.nome).join(" → ")
-      : "vazia";
+  return new THREE.MeshStandardMaterial({
 
+    color:cor,
+
+    roughness:
+      metal ? .25 : .55,
+
+    metalness:
+      metal ? .75 : .05
+  });
 }
 
 
-/* =========================================================
-   INICIAR POR NOME
-========================================================= */
+/* =====================================================
+   CRIAR PERSONAGEM
+===================================================== */
 
-function iniciarPorNome(valor){
+function criarPersonagem(tipo){
 
-  const chave=normalizar(valor);
-  const personagem=personagens[chave];
+  const grupo =
+    new THREE.Group();
 
-  if(!personagem){
+  grupo.position.y=-2.25;
 
-    statusEl.textContent=
-      "❌ Personagem não encontrado";
 
-    return;
+  let cores;
 
+
+  switch(tipo){
+
+    case"spider":
+
+      cores={
+        corpo:0x090909,
+        detalhe:0xb40020,
+        pele:0x111111
+      };
+
+    break;
+
+
+    case"hulk":
+
+      cores={
+        corpo:0x4c9b3c,
+        detalhe:0x552a79,
+        pele:0x5aaa43
+      };
+
+    break;
+
+
+    case"batman":
+
+      cores={
+        corpo:0x111318,
+        detalhe:0x24262c,
+        pele:0x9b694f
+      };
+
+    break;
+
+
+    case"iron":
+
+      cores={
+        corpo:0xa50012,
+        detalhe:0xffc400,
+        pele:0x202020
+      };
+
+    break;
+
+
+    case"superman":
+
+      cores={
+        corpo:0x1761ba,
+        detalhe:0xd7192d,
+        pele:0xb87959
+      };
+
+    break;
+
+
+    case"flash":
+
+      cores={
+        corpo:0xc90015,
+        detalhe:0xffc400,
+        pele:0x9b624c
+      };
+
+    break;
+
+
+    case"captain":
+
+      cores={
+        corpo:0x174b8d,
+        detalhe:0xcfcfcf,
+        pele:0xb87858
+      };
+
+    break;
+
+
+    case"ninja":
+
+      cores={
+        corpo:0x15171d,
+        detalhe:0x4e70ff,
+        pele:0x171717
+      };
+
+    break;
+
+
+    case"robot":
+
+      cores={
+        corpo:0x778493,
+        detalhe:0x6eeaff,
+        pele:0x9ba8b5
+      };
+
+    break;
+
+
+    case"alien":
+
+      cores={
+        corpo:0x187c48,
+        detalhe:0x7dff8d,
+        pele:0x73ff91
+      };
+
+    break;
+
+
+    case"mage":
+
+      cores={
+        corpo:0x47127b,
+        detalhe:0xd76cff,
+        pele:0x725040
+      };
+
+    break;
+
+
+    case"darkninja":
+
+      cores={
+        corpo:0x050505,
+        detalhe:0xa800ff,
+        pele:0x111111
+      };
+
+    break;
+
+
+    case"titan":
+
+      cores={
+        corpo:0x4c5668,
+        detalhe:0xb9c7ff,
+        pele:0x77818f
+      };
+
+    break;
+
+
+    case"cosmic":
+
+      cores={
+        corpo:0x202e9d,
+        detalhe:0x77f7ff,
+        pele:0x5fcfff
+      };
+
+    break;
+
+
+    case"dragon":
+
+      cores={
+        corpo:0x7e160d,
+        detalhe:0xff5425,
+        pele:0xb72a18
+      };
+
+    break;
+
+
+    default:
+
+      cores={
+        corpo:0x333333,
+        detalhe:0xffffff,
+        pele:0xb87959
+      };
   }
 
-  if(ocupado){
 
-    fila.push(personagem);
+  /* =========================
+     CORPO
+  ========================= */
 
-    atualizarFila();
+  const corpo =
+    new THREE.Mesh(
+      new THREE.CapsuleGeometry(
+        .55,
+        1.25,
+        8,
+        16
+      ),
+      material(
+        cores.corpo,
+        tipo==="iron"||
+        tipo==="robot"||
+        tipo==="titan"
+      )
+    );
 
-    statusEl.textContent=
-      "➕ "+personagem.nome+
-      " entrou na fila";
+  corpo.position.y=1.65;
 
-    return;
+  corpo.scale.z=.65;
 
+  corpo.castShadow=true;
+
+  grupo.add(corpo);
+
+
+  /* =========================
+     CABEÇA
+  ========================= */
+
+  const cabeca =
+    new THREE.Mesh(
+      new THREE.SphereGeometry(
+        .43,
+        24,
+        24
+      ),
+      material(
+        cores.pele,
+        tipo==="robot"||
+        tipo==="titan"
+      )
+    );
+
+  cabeca.position.y=2.75;
+
+  cabeca.castShadow=true;
+
+  grupo.add(cabeca);
+
+
+  /* =========================
+     BRAÇOS
+  ========================= */
+
+  const bracoGeo =
+    new THREE.CapsuleGeometry(
+      .16,
+      .85,
+      6,
+      12
+    );
+
+
+  const bracoL =
+    new THREE.Mesh(
+      bracoGeo,
+      material(cores.corpo)
+    );
+
+  bracoL.position.set(
+    -.72,
+    1.7,
+    0
+  );
+
+  bracoL.rotation.z=-.18;
+
+  grupo.add(bracoL);
+
+
+  const bracoR =
+    new THREE.Mesh(
+      bracoGeo,
+      material(cores.corpo)
+    );
+
+  bracoR.position.set(
+    .72,
+    1.7,
+    0
+  );
+
+  bracoR.rotation.z=.18;
+
+  grupo.add(bracoR);
+
+
+  /* =========================
+     PERNAS
+  ========================= */
+
+  const pernaGeo =
+    new THREE.CapsuleGeometry(
+      .19,
+      1.05,
+      6,
+      12
+    );
+
+
+  const pernaL =
+    new THREE.Mesh(
+      pernaGeo,
+      material(cores.corpo)
+    );
+
+  pernaL.position.set(
+    -.3,
+    .55,
+    0
+  );
+
+  grupo.add(pernaL);
+
+
+  const pernaR =
+    new THREE.Mesh(
+      pernaGeo,
+      material(cores.corpo)
+    );
+
+  pernaR.position.set(
+    .3,
+    .55,
+    0
+  );
+
+  grupo.add(pernaR);
+
+
+  /* =========================
+     DETALHE NO PEITO
+  ========================= */
+
+  const detalhe =
+    new THREE.Mesh(
+      new THREE.BoxGeometry(
+        .38,
+        .38,
+        .08
+      ),
+      material(
+        cores.detalhe,
+        1
+      )
+    );
+
+  detalhe.position.set(
+    0,
+    1.75,
+    -.39
+  );
+
+  grupo.add(detalhe);
+
+
+  /* =========================
+     OLHOS
+  ========================= */
+
+  if(tipo!=="hulk" &&
+     tipo!=="alien"){
+
+    const olhoMat =
+      material(0xffffff,1);
+
+    const olhoGeo =
+      new THREE.SphereGeometry(
+        .075,
+        12,
+        12
+      );
+
+
+    const olhoL =
+      new THREE.Mesh(
+        olhoGeo,
+        olhoMat
+      );
+
+    olhoL.position.set(
+      -.16,
+      2.83,
+      -.39
+    );
+
+    grupo.add(olhoL);
+
+
+    const olhoR =
+      new THREE.Mesh(
+        olhoGeo,
+        olhoMat
+      );
+
+    olhoR.position.set(
+      .16,
+      2.83,
+      -.39
+    );
+
+    grupo.add(olhoR);
   }
 
-  iniciar(personagem);
 
+  /* =========================
+     CAPA
+  ========================= */
+
+  if(tipo==="batman"||
+     tipo==="superman"){
+
+    const capa =
+      new THREE.Mesh(
+        new THREE.PlaneGeometry(
+          1.7,
+          2.2
+        ),
+        new THREE.MeshStandardMaterial({
+          color:
+            tipo==="batman"
+            ?0x050505
+            :0x9b0718,
+
+          side:
+            THREE.DoubleSide,
+
+          roughness:.7
+        })
+      );
+
+    capa.position.set(
+      0,
+      1.55,
+      .35
+    );
+
+    capa.rotation.x=.12;
+
+    grupo.add(capa);
+  }
+
+
+  /* =========================
+     ANEL DE ENERGIA
+  ========================= */
+
+  const ring =
+    new THREE.Mesh(
+
+      new THREE.TorusGeometry(
+        .8,
+        .025,
+        8,
+        64
+      ),
+
+      new THREE.MeshBasicMaterial({
+        color:cores.detalhe
+      })
+    );
+
+  ring.position.y=.03;
+
+  ring.rotation.x=
+    Math.PI/2;
+
+  grupo.add(ring);
+
+
+  return grupo;
 }
 
 
-/* =========================================================
-   ANIMAÇÃO COMPLETA
-========================================================= */
+/* =====================================================
+   TROCAR PERSONAGEM
+===================================================== */
+
+function mostrarPersonagem(tipo){
+
+  if(personagemAtual){
+
+    scene.remove(
+      personagemAtual
+    );
+  }
+
+  personagemAtual =
+    criarPersonagem(tipo);
+
+  scene.add(
+    personagemAtual
+  );
+}
+
+
+/* =====================================================
+   ANIMAÇÃO 3D
+===================================================== */
+
+function animar(){
+
+  requestAnimationFrame(
+    animar
+  );
+
+  const tempo =
+    clock.getElapsedTime();
+
+
+  if(personagemAtual){
+
+    /* movimento natural */
+
+    personagemAtual.rotation.y =
+      Math.sin(tempo*.9)*.12;
+
+
+    if(
+      personagemAtual.userData.dancando
+    ){
+
+      personagemAtual.position.y =
+        -2.25 +
+        Math.abs(
+          Math.sin(tempo*5)
+        )*.16;
+
+      personagemAtual.rotation.z =
+        Math.sin(tempo*5)*.07;
+    }
+
+
+    /* entrada */
+
+    if(
+      personagemAtual.userData.entrando
+    ){
+
+      personagemAtual.rotation.y =
+        tempo*3;
+    }
+  }
+
+
+  renderer.render(
+    scene,
+    camera
+  );
+}
+
+
+/* =====================================================
+   INICIAR SHOW
+===================================================== */
 
 function iniciar(personagem){
 
+  if(ocupado){
+
+    document.getElementById(
+      "status"
+    ).textContent=
+      "⏳ O palco está ocupado";
+
+    return;
+  }
+
   ocupado=true;
 
-  total++;
 
-  counter.textContent=
-    total+
-    (total===1?" personagem":" personagens");
+  const status =
+    document.getElementById(
+      "status"
+    );
+
+  const name =
+    document.getElementById(
+      "name"
+    );
 
 
-  hero.style.display="block";
+  mostrarPersonagem(
+    personagem.tipo
+  );
 
-  hero.className=
-    personagem.classe+" enter";
+
+  personagemAtual
+    .userData
+    .entrando=true;
 
 
-  nameEl.textContent=
-    personagem.emoji+
-    " "+
+  personagemAtual
+    .userData
+    .dancando=false;
+
+
+  name.textContent =
     personagem.nome;
 
-  nameEl.classList.add("show");
+  name.style.display =
+    "block";
 
-  shadow.style.opacity=".65";
 
-  shadow.style.transform=
-    "translateX(-50%) scale(.65)";
+  container.className=
+    "enter";
 
-  statusEl.textContent=
+
+  status.textContent=
     "🚪 "+personagem.nome+
-    " está entrando...";
-
-  particulas();
+    " entrando no palco...";
 
 
-  /* CAMINHADA */
+  /* entrada */
 
   setTimeout(()=>{
 
-    hero.className=
-      personagem.classe+" walk";
+    if(!personagemAtual)
+      return;
 
-    statusEl.textContent=
-      "🚶 "+personagem.nome+
-      " caminhando para o centro...";
+    personagemAtual
+      .userData
+      .entrando=false;
 
-    shadow.style.transform=
-      "translateX(-50%) scale(.85)";
+    personagemAtual
+      .userData
+      .dancando=true;
 
-  },1600);
+    container.className=
+      "dance";
 
-
-  /* DANÇA */
-
-  setTimeout(()=>{
-
-    hero.className=
-      personagem.classe+" dance";
-
-    statusEl.textContent=
-      "🕺 "+personagem.nome+
+    status.textContent=
+      "🔥 "+personagem.nome+
       " está dançando!";
 
-    particulas();
-
-  },3000);
+  },1400);
 
 
-  /* SEGUNDA EXPLOSÃO DE EFEITO */
+  /* dança */
 
   setTimeout(()=>{
 
-    particulas();
+    if(!personagemAtual)
+      return;
 
-  },5000);
+    personagemAtual
+      .userData
+      .dancando=false;
 
+    container.className=
+      "exit";
 
-  /* POSE */
-
-  setTimeout(()=>{
-
-    hero.className=
-      personagem.classe+" pose";
-
-    statusEl.textContent=
-      "✨ "+personagem.nome+
-      " fez a pose!";
-
-    particulas();
-
-  },6600);
-
-
-  /* SAÍDA */
-
-  setTimeout(()=>{
-
-    hero.className=
-      personagem.classe+" exit";
-
-    nameEl.classList.remove("show");
-
-    statusEl.textContent=
+    status.textContent=
       "🚪 "+personagem.nome+
       " está saindo...";
 
-  },7500);
+  },6500);
 
 
-  /* FINAL */
+  /* fim */
 
   setTimeout(()=>{
 
-    hero.style.display="none";
+    container.className="";
 
-    hero.className=
-      personagem.classe;
+    container.style.opacity="0";
 
-    shadow.style.opacity="0";
+    name.style.display="none";
 
-    nameEl.classList.remove("show");
+    status.textContent=
+      "🟢 LIVE Stage • Pronto";
+
+    if(personagemAtual){
+
+      scene.remove(
+        personagemAtual
+      );
+
+      personagemAtual=null;
+    }
 
     ocupado=false;
 
-    statusEl.textContent=
-      "🟢 LIVE Stage pronto";
-
-
-    if(fila.length){
-
-      const proximo=fila.shift();
-
-      atualizarFila();
-
-      setTimeout(
-        ()=>iniciar(proximo),
-        500
-      );
-
-    }else{
-
-      atualizarFila();
-
-    }
-
-  },9100);
-
+  },7800);
 }
 
 
-/* =========================================================
-   TESTAR
-========================================================= */
+/* =====================================================
+   BUSCAR
+===================================================== */
+
+function normalizar(texto){
+
+  return texto
+    .toLowerCase()
+    .trim()
+    .normalize("NFD")
+    .replace(
+      /[\u0300-\u036f]/g,
+      ""
+    );
+}
+
+
+function iniciarPorNome(valor){
+
+  const chave =
+    normalizar(valor);
+
+  const personagem =
+    personagens[chave];
+
+
+  if(!personagem){
+
+    document.getElementById(
+      "status"
+    ).textContent=
+      "❌ Personagem não encontrado";
+
+    return;
+  }
+
+
+  iniciar(personagem);
+}
+
 
 function testar(){
 
-  const campo=
-    document.getElementById("cmd");
+  const campo =
+    document.getElementById(
+      "cmd"
+    );
 
-  const valor=
-    campo.value;
+  iniciarPorNome(
+    campo.value
+  );
 
   campo.value="";
-
-  iniciarPorNome(valor);
-
 }
 
 
-/* =========================================================
-   BOTÕES
-========================================================= */
+/* =====================================================
+   TIKTOK — PRESENTES
+===================================================== */
 
-const lista=[
+function receberPresenteTikTok(
+  nomePresente
+){
 
-  ["🕷️","homem aranha"],
-  ["💚","hulk"],
-  ["🦇","batman"],
-  ["🤖","homem de ferro"],
-  ["🦸","superman"],
-  ["⚡","flash"],
-  ["🛡️","capitao america"],
-  ["🥷","ninja"],
-  ["🤖","robo"],
-  ["👽","alien"],
-  ["🧙","mago"],
-  ["🥷","ninja sombrio"],
-  ["🤖","titan"],
-  ["👽","cosmico"],
-  ["🐲","dragao"]
+  const chave =
+    normalizar(
+      nomePresente
+    );
 
-];
-
-const tests=
-  document.getElementById("tests");
-
-lista.forEach(([emoji,chave])=>{
-
-  const b=document.createElement("button");
-
-  b.className="test";
-
-  b.textContent=
-    emoji+" "+
-    personagens[chave].nome;
-
-  b.onclick=()=>{
-    iniciarPorNome(chave);
-  };
-
-  tests.appendChild(b);
-
-});
+  const personagemNome =
+    presentes[chave];
 
 
-/* =========================================================
-   ENTER
-========================================================= */
+  if(!personagemNome){
+
+    document.getElementById(
+      "status"
+    ).textContent=
+      "🎁 Presente recebido: "+
+      nomePresente;
+
+    return;
+  }
+
+
+  iniciarPorNome(
+    personagemNome
+  );
+}
+
+
+/* =====================================================
+   TESTE DE PRESENTES
+===================================================== */
+
+/*
+
+Exemplos:
+
+receberPresenteTikTok("rosa");
+
+receberPresenteTikTok("leao");
+
+receberPresenteTikTok("coroa");
+
+receberPresenteTikTok("foguete");
+
+receberPresenteTikTok("coracao");
+
+*/
 
 document
   .getElementById("cmd")
   .addEventListener(
     "keydown",
-    e=>{
-      if(e.key==="Enter") testar();
+    function(e){
+
+      if(e.key==="Enter"){
+        testar();
+      }
+
     }
   );
 
 
-/* =========================================================
-   PRESENTE → PERSONAGEM
-========================================================= */
+/* =====================================================
+   REDIMENSIONAR
+===================================================== */
 
-function receberPresenteTikTok(nomePresente){
+function redimensionar(){
 
-  const chave=
-    normalizar(nomePresente);
+  const stage =
+    document.getElementById(
+      "stage"
+    );
 
-  const personagem=
-    presentes[chave];
+  camera.aspect =
+    window.innerWidth /
+    stage.clientHeight;
 
-  if(!personagem){
+  camera.updateProjectionMatrix();
 
-    statusEl.textContent=
-      "🎁 Presente recebido: "+
-      nomePresente;
 
-    return;
-
-  }
-
-  iniciarPorNome(personagem);
-
+  renderer.setSize(
+    window.innerWidth,
+    stage.clientHeight
+  );
 }
 
 
-/* =========================================================
-   EVENTO EXTERNO
-========================================================= */
+/* =====================================================
+   COMEÇAR
+===================================================== */
 
-window.addEventListener("message",event=>{
-
-  const data=event.data||{};
-
-  if(data.type==="gift"){
-
-    receberPresenteTikTok(
-      data.gift
-    );
-
-  }
-
-});
-
-
-/* =========================================================
-   DISPONIBILIZA PARA O WORKER
-========================================================= */
-
-window.receberPresenteTikTok=
-  receberPresenteTikTok;
+iniciar3D();
 
 </script>
 
