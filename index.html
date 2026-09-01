@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LIVE Stage V3</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#080b18;color:white;font-family:Arial,sans-serif;text-align:center}
+header{padding:18px;background:#11162b;font-size:22px;font-weight:bold}
+#stage{height:65vh;position:relative;overflow:hidden;background:radial-gradient(circle,#35447d,#080b18 75%)}
+#floor{position:absolute;bottom:-100px;left:-20%;width:140%;height:45%;transform:perspective(400px) rotateX(60deg);background:repeating-linear-gradient(90deg,#ffffff10 0 2px,transparent 2px 55px),repeating-linear-gradient(0deg,#ffffff10 0 2px,transparent 2px 45px)}
+#hero{display:none;position:absolute;bottom:18%;left:50%;width:70px;height:130px;transform:translateX(-50%)}
+#hero.enter{display:block;animation:enter 1.5s forwards}
+#hero.dance{display:block;animation:dance .45s infinite alternate}
+#hero.exit{display:block;animation:exit 1.3s forwards}
+@keyframes enter{from{left:-10%}to{left:50%}}
+@keyframes dance{from{transform:translateX(-50%) rotate(-6deg)}to{transform:translateX(-50%) rotate(6deg) translateY(-8px)}}
+@keyframes exit{from{left:50%}to{left:110%}}
+.head{position:absolute;top:0;left:19px;width:32px;height:32px;border-radius:50%;background:#d92740;border:2px solid #701526}
+.eye{position:absolute;top:9px;width:9px;height:13px;background:white;border:2px solid #111;border-radius:70%}
+.e1{left:5px}.e2{right:5px}
+.body{position:absolute;top:28px;left:15px;width:40px;height:65px;border-radius:14px;background:linear-gradient(90deg,#d92740 48%,#18348e 49%)}
+.arm{position:absolute;top:34px;width:10px;height:50px;background:#d92740;border-radius:10px}
+.a1{left:7px;transform:rotate(25deg)}.a2{right:7px;transform:rotate(-25deg)}
+.leg{position:absolute;top:88px;width:12px;height:43px;background:#18348e;border-radius:10px}
+.l1{left:19px;transform:rotate(8deg)}.l2{left:39px;transform:rotate(-8deg)}
+.web{position:absolute;top:48px;left:29px;font-size:18px}
+#name{display:none;position:absolute;bottom:43%;left:50%;transform:translateX(-50%);background:#080b18dd;padding:7px 12px;border-radius:10px;font-weight:bold}
+#status{padding:10px;font-size:13px}
+.controls{padding:15px;background:#10152a}
+input{width:65%;padding:14px;border-radius:10px;border:1px solid #555;background:#191f38;color:white;font-size:16px}
+button{padding:14px;border:0;border-radius:10px;background:#6878ef;color:white;font-weight:bold}
+#test{margin-top:10px;width:90%}
+</style>
+</head>
+
+<body>
+<header>🎮 LIVE Stage V3</header>
+
+<div id="stage">
+<div id="floor"></div>
+<div id="status">Pronto para começar</div>
+<div id="name"></div>
+
+<div id="hero">
+<div class="head">
+<span class="eye e1"></span>
+<span class="eye e2"></span>
+</div>
+<div class="body"></div>
+<div class="arm a1"></div>
+<div class="arm a2"></div>
+<div class="leg l1"></div>
+<div class="leg l2"></div>
+<div class="web">✦</div>
+</div>
+</div>
+
+<div class="controls">
+<input id="cmd" placeholder="homem aranha">
+<button onclick="entrar()">ENTRAR</button>
+<br>
+<button id="test" onclick="testar()">🕷️ TESTAR PERSONAGEM</button>
+</div>
+
+<script>
+let ocupado=false;
+
+function entrar(){
+let comando=document.getElementById("cmd").value
+.toLowerCase().trim();
+
+if(comando==="homem aranha"){
+iniciar("Visitante");
+document.getElementById("cmd").value="";
+}else{
+document.getElementById("status").textContent=
+'Digite exatamente: "homem aranha"';
+}
+}
+
+function testar(){
+iniciar("Teste");
+}
+
+function iniciar(usuario){
+if(ocupado)return;
+
+ocupado=true;
+
+let hero=document.getElementById("hero");
+let name=document.getElementById("name");
+let status=document.getElementById("status");
+
+name.textContent=usuario;
+name.style.display="block";
+
+hero.className="";
+void hero.offsetWidth;
+hero.className="enter";
+
+status.textContent="🕷️ Entrando…";
+
+setTimeout(function(){
+hero.className="dance";
+status.textContent="💃 Dançando!";
+},1500);
+
+setTimeout(function(){
+hero.className="exit";
+status.textContent="🚪 Saindo…";
+},6500);
+
+setTimeout(function(){
+hero.className="";
+hero.style.display="none";
+name.style.display="none";
+status.textContent="Pronto para começar";
+ocupado=false;
+},7800);
+}
+</script>
+</body>
+</html>
