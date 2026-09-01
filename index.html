@@ -3,10 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-<title>LIVE Stage V8 2D</title>
+<title>LIVE Stage V8 • 2D</title>
 
 <style>
-*{box-sizing:border-box}
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+}
 
 html,body{
   margin:0;
@@ -18,55 +21,57 @@ html,body{
   overflow-x:hidden;
 }
 
-/* =========================
+body{
+  background:#000;
+}
+
+/* =====================================================
    PALCO
-========================= */
+===================================================== */
 
 #stage{
   position:relative;
+  width:100%;
   height:70vh;
   min-height:470px;
   overflow:hidden;
 
   background:
     linear-gradient(
-      rgba(0,0,0,.18),
-      rgba(0,0,0,.58)
+      rgba(0,0,0,.08),
+      rgba(0,0,0,.45)
     ),
     url("fundo.jpg") center/cover no-repeat;
 }
 
-/* brilho ambiente */
-
-#stage:before{
+#stage:after{
   content:"";
   position:absolute;
   inset:0;
+  pointer-events:none;
   background:
     radial-gradient(
-      circle at 50% 55%,
-      rgba(255,0,70,.20),
-      transparent 34%
-    ),
-    radial-gradient(
-      circle at 15% 30%,
-      rgba(0,110,255,.14),
-      transparent 30%
+      ellipse at center bottom,
+      transparent 25%,
+      rgba(0,0,0,.5) 100%
     );
-  pointer-events:none;
 }
 
-/* refletores */
+/* =====================================================
+   LUZES
+===================================================== */
 
 .beam{
   position:absolute;
-  top:-25%;
+  top:-30%;
   width:18%;
   height:150%;
-  opacity:.12;
+  opacity:.14;
   filter:blur(22px);
-  transform:rotate(14deg);
+  transform-origin:top center;
   pointer-events:none;
+  z-index:2;
+  animation:sweep 4s ease-in-out infinite alternate;
 }
 
 .beam.blue{
@@ -76,13 +81,18 @@ html,body{
 
 .beam.red{
   right:8%;
-  background:#ff003c;
-  transform:rotate(-14deg);
+  background:#ff1744;
+  animation-delay:-2s;
 }
 
-/* =========================
-   HUD
-========================= */
+@keyframes sweep{
+  from{transform:rotate(10deg)}
+  to{transform:rotate(-10deg)}
+}
+
+/* =====================================================
+   STATUS
+===================================================== */
 
 #status{
   position:absolute;
@@ -91,46 +101,45 @@ html,body{
   transform:translateX(-50%);
   z-index:100;
 
-  padding:10px 17px;
-  border-radius:30px;
+  padding:9px 17px;
+  border-radius:22px;
 
-  background:rgba(5,5,8,.78);
-  border:1px solid rgba(255,255,255,.16);
-
-  box-shadow:
-    0 8px 30px rgba(0,0,0,.35),
-    inset 0 0 20px rgba(255,255,255,.03);
+  background:rgba(0,0,0,.78);
+  border:1px solid rgba(255,255,255,.2);
 
   font-size:13px;
   font-weight:bold;
   white-space:nowrap;
+
+  box-shadow:
+    0 5px 25px rgba(0,0,0,.35);
 }
 
 #name{
   position:absolute;
   left:50%;
-  bottom:10%;
+  bottom:8%;
   transform:translateX(-50%);
 
-  z-index:90;
+  z-index:80;
+
+  padding:8px 18px;
+  border-radius:13px;
+
+  background:rgba(5,5,8,.9);
+  border:1px solid rgba(255,255,255,.2);
+
+  font-weight:bold;
+  font-size:14px;
 
   display:none;
 
-  padding:8px 18px;
-  border-radius:14px;
-
-  background:rgba(5,5,8,.88);
-  border:1px solid rgba(255,255,255,.18);
-
-  font-weight:800;
-  letter-spacing:.3px;
-
-  box-shadow:0 5px 25px rgba(0,0,0,.45);
+  box-shadow:0 5px 25px rgba(0,0,0,.4);
 }
 
-/* =========================
+/* =====================================================
    PERSONAGEM 2D
-========================= */
+===================================================== */
 
 #character{
   position:absolute;
@@ -138,996 +147,799 @@ html,body{
   left:50%;
   bottom:9%;
 
-  width:190px;
+  width:180px;
   height:330px;
 
-  z-index:50;
+  z-index:60;
 
   display:none;
 
   transform-origin:center bottom;
 
   filter:
-    drop-shadow(0 18px 16px rgba(0,0,0,.55));
+    drop-shadow(0 15px 10px rgba(0,0,0,.55));
 }
 
-/* sombra no chão */
-
-#character:after{
-  content:"";
-
-  position:absolute;
-  bottom:-5px;
-  left:20px;
-
-  width:150px;
-  height:22px;
-
-  border-radius:50%;
-
-  background:rgba(0,0,0,.48);
-  filter:blur(7px);
-
-  z-index:-1;
-}
-
-/* =========================
-   CORPO BASE
-========================= */
+/* cabeça */
 
 .head{
   position:absolute;
+  left:58px;
+  top:5px;
 
-  top:4px;
-  left:60px;
+  width:64px;
+  height:72px;
 
-  width:70px;
-  height:76px;
+  border-radius:45% 45% 42% 42%;
 
-  border-radius:45% 45% 48% 48%;
+  z-index:8;
 
-  z-index:6;
+  box-shadow:
+    inset -8px -8px 12px rgba(0,0,0,.25),
+    inset 5px 4px 8px rgba(255,255,255,.12);
 }
 
-.body{
+/* cabelo */
+
+.hair{
   position:absolute;
+  left:4px;
+  top:-7px;
 
-  top:72px;
-  left:48px;
+  width:56px;
+  height:30px;
 
-  width:94px;
-  height:112px;
+  border-radius:50% 55% 25% 25%;
 
-  border-radius:30px 30px 20px 20px;
-
-  z-index:4;
+  z-index:10;
 }
 
-.arm{
-  position:absolute;
-
-  top:80px;
-
-  width:27px;
-  height:112px;
-
-  border-radius:20px;
-
-  transform-origin:top center;
-
-  z-index:3;
-}
-
-.arm.l{
-  left:27px;
-}
-
-.arm.r{
-  right:27px;
-}
-
-.leg{
-  position:absolute;
-
-  top:175px;
-
-  width:31px;
-  height:125px;
-
-  border-radius:17px;
-
-  transform-origin:top center;
-
-  z-index:2;
-}
-
-.leg.l{
-  left:53px;
-}
-
-.leg.r{
-  right:53px;
-}
-
-/* botas */
-
-.leg:after{
-  content:"";
-
-  position:absolute;
-
-  bottom:-7px;
-  left:-9px;
-
-  width:49px;
-  height:25px;
-
-  border-radius:15px 20px 10px 10px;
-
-  background:#111;
-}
-
-/* =========================
-   CABEÇAS / ROSTOS
-========================= */
+/* olhos */
 
 .eye{
   position:absolute;
 
-  top:31px;
+  top:29px;
 
-  width:17px;
+  width:18px;
   height:10px;
 
-  background:white;
+  background:#fff;
+  border-radius:50%;
 
-  border-radius:80% 20%;
+  z-index:15;
 
-  z-index:20;
+  box-shadow:0 0 5px rgba(255,255,255,.8);
 }
 
 .eye.l{
-  left:13px;
-  transform:rotate(-18deg);
+  left:12px;
+  transform:rotate(-12deg);
 }
 
 .eye.r{
-  right:13px;
-  transform:rotate(18deg);
+  right:12px;
+  transform:rotate(12deg);
 }
 
-/* =========================
-   HOMEM ARANHA
-========================= */
+/* corpo */
 
-.spider .head{
-  background:
-    repeating-linear-gradient(
-      25deg,
-      transparent 0 9px,
-      rgba(255,255,255,.22) 10px 11px
-    ),
-    #c40019;
-
-  border:3px solid #111;
-
-  clip-path:polygon(
-    50% 0,
-    88% 18%,
-    100% 58%,
-    75% 100%,
-    25% 100%,
-    0 58%,
-    12% 18%
-  );
-}
-
-.spider .eye{
-  width:22px;
-  height:29px;
-  background:#fff;
-  border:3px solid #111;
-  border-radius:70% 30%;
-}
-
-.spider .body{
-  background:
-    linear-gradient(
-      90deg,
-      #b60017 0 23%,
-      #111 24% 76%,
-      #b60017 77%
-    );
-
-  border:3px solid #111;
-}
-
-.spider .body:after{
-  content:"✦";
-
-  position:absolute;
-  left:30px;
-  top:26px;
-
-  color:#fff;
-  font-size:31px;
-}
-
-.spider .arm{
-  background:#c40019;
-  border:3px solid #111;
-}
-
-.spider .leg{
-  background:#101010;
-  border:3px solid #111;
-}
-
-/* =========================
-   HULK
-========================= */
-
-.hulk .head{
-  background:#4c9d38;
-  border:3px solid #263d20;
-  border-radius:45% 45% 40% 40%;
-}
-
-.hulk .head:before{
-  content:"";
-
-  position:absolute;
-  top:-12px;
-  left:7px;
-
-  width:58px;
-  height:22px;
-
-  background:#202020;
-
-  border-radius:50% 50% 20% 20%;
-}
-
-.hulk .body{
-  background:#4e963b;
-  border:3px solid #263d20;
-
-  transform:scaleX(1.18);
-}
-
-.hulk .arm{
-  background:#4e963b;
-  border:3px solid #263d20;
-
-  width:34px;
-  height:125px;
-}
-
-.hulk .leg{
-  background:#342c48;
-  border:3px solid #171322;
-  width:37px;
-}
-
-/* =========================
-   BATMAN
-========================= */
-
-.batman .head{
-  background:#181b20;
-  border:3px solid #050505;
-
-  clip-path:polygon(
-    0 25%,
-    22% 0,
-    35% 19%,
-    50% 10%,
-    65% 19%,
-    78% 0,
-    100% 25%,
-    90% 100%,
-    10% 100%
-  );
-}
-
-.batman .eye{
-  background:#ffe45a;
-  height:7px;
-}
-
-.batman .body{
-  background:#17191d;
-  border:3px solid #070707;
-}
-
-.batman .body:after{
-  content:"🦇";
-
-  position:absolute;
-  left:28px;
-  top:30px;
-
-  font-size:30px;
-}
-
-.batman .arm{
-  background:#17191d;
-  border:3px solid #070707;
-}
-
-.batman .leg{
-  background:#090a0d;
-  border:3px solid #050505;
-}
-
-/* capa */
-
-.batman:before{
-  content:"";
-
+.body{
   position:absolute;
 
-  left:28px;
-  top:80px;
+  left:47px;
+  top:68px;
 
-  width:135px;
-  height:215px;
+  width:86px;
+  height:112px;
 
-  background:
-    linear-gradient(
-      90deg,
-      #08090b,
-      #202329,
-      #08090b
-    );
+  border-radius:25px 25px 18px 18px;
 
-  clip-path:polygon(
-    0 0,
-    100% 0,
-    88% 100%,
-    70% 87%,
-    53% 100%,
-    37% 87%,
-    18% 100%
-  );
+  z-index:5;
 
-  z-index:1;
+  box-shadow:
+    inset -10px -8px 14px rgba(0,0,0,.3),
+    inset 7px 4px 10px rgba(255,255,255,.1);
 }
 
-/* =========================
-   HOMEM DE FERRO
-========================= */
+/* braços */
 
-.iron .head{
-  background:
-    linear-gradient(
-      135deg,
-      #f2c13d,
-      #a80000 52%,
-      #590000
-    );
-
-  border:4px solid #550000;
-
-  border-radius:38%;
-}
-
-.iron .eye{
-  background:#8ff5ff;
-  box-shadow:0 0 8px #42eaff;
-}
-
-.iron .body{
-  background:
-    linear-gradient(
-      90deg,
-      #8c0000,
-      #e01919,
-      #8c0000
-    );
-
-  border:4px solid #f0b62c;
-}
-
-.iron .body:after{
-  content:"";
-
+.arm{
   position:absolute;
 
-  left:34px;
-  top:34px;
+  top:77px;
+
+  width:25px;
+  height:108px;
+
+  border-radius:20px;
+
+  z-index:4;
+
+  transform-origin:50% 12px;
+
+  box-shadow:
+    inset -6px -5px 8px rgba(0,0,0,.3);
+}
+
+.arm.l{
+  left:25px;
+}
+
+.arm.r{
+  right:25px;
+}
+
+/* mãos */
+
+.hand{
+  position:absolute;
 
   width:27px;
   height:27px;
 
   border-radius:50%;
 
-  background:#8ff5ff;
+  top:172px;
 
-  box-shadow:
-    0 0 16px #42eaff,
-    inset 0 0 8px white;
+  z-index:7;
 }
 
+/* pernas */
+
+.leg{
+  position:absolute;
+
+  top:169px;
+
+  width:31px;
+  height:130px;
+
+  border-radius:17px;
+
+  z-index:3;
+
+  transform-origin:50% 10px;
+
+  box-shadow:
+    inset -7px -6px 10px rgba(0,0,0,.3);
+}
+
+.leg.l{
+  left:52px;
+}
+
+.leg.r{
+  right:52px;
+}
+
+/* botas */
+
+.boot{
+  position:absolute;
+
+  width:38px;
+  height:28px;
+
+  border-radius:12px 12px 7px 7px;
+
+  top:286px;
+
+  z-index:4;
+
+  box-shadow:
+    inset -5px -4px 6px rgba(0,0,0,.3);
+}
+
+.boot.l{
+  left:47px;
+}
+
+.boot.r{
+  right:47px;
+}
+
+/* =====================================================
+   ROUPAS / PERSONAGENS
+===================================================== */
+
+/* ARANHA */
+
+.spider .head,
+.spider .body,
+.spider .arm{
+  background:linear-gradient(135deg,#171717,#7b0012);
+  border:2px solid #ef1734;
+}
+
+.spider .leg{
+  background:linear-gradient(135deg,#161616,#090909);
+  border:2px solid #d9152d;
+}
+
+.spider .hand,
+.spider .boot{
+  background:#151515;
+  border:2px solid #e51a32;
+}
+
+.spider .body:after{
+  content:"✦";
+  position:absolute;
+  left:28px;
+  top:25px;
+
+  font-size:34px;
+  color:#fff;
+
+  text-shadow:
+    0 0 4px #f00;
+}
+
+/* HULK */
+
+.hulk .head{
+  background:linear-gradient(135deg,#70b94b,#28682f);
+}
+
+.hulk .body,
+.hulk .arm{
+  background:linear-gradient(135deg,#5aa93d,#235c2c);
+}
+
+.hulk .leg{
+  background:linear-gradient(135deg,#322d3c,#15131c);
+}
+
+.hulk .hand{
+  background:#4f9c3a;
+}
+
+.hulk .boot{
+  background:#25222c;
+}
+
+/* BATMAN */
+
+.batman .head{
+  background:#222;
+}
+
+.batman .body,
+.batman .arm,
+.batman .leg{
+  background:linear-gradient(135deg,#30333a,#08090b);
+  border:2px solid #555;
+}
+
+.batman .hand,
+.batman .boot{
+  background:#090909;
+  border:2px solid #444;
+}
+
+.batman .body:after{
+  content:"🦇";
+  position:absolute;
+  left:25px;
+  top:30px;
+  font-size:32px;
+}
+
+/* HOMEM DE FERRO */
+
+.iron .head{
+  background:linear-gradient(135deg,#f4c54e,#8b5200);
+  border:3px solid #ffcf40;
+}
+
+.iron .body,
 .iron .arm{
-  background:#a50000;
-  border:4px solid #f0b62c;
+  background:linear-gradient(135deg,#e32925,#72000b);
+  border:3px solid #ffc928;
 }
 
 .iron .leg{
-  background:#9c0000;
-  border:4px solid #f0b62c;
+  background:linear-gradient(135deg,#b91d20,#4e0509);
+  border:3px solid #e5a91d;
 }
 
-/* =========================
-   SUPERMAN
-========================= */
+.iron .hand,
+.iron .boot{
+  background:#bd2022;
+  border:2px solid #ffca28;
+}
+
+.iron .body:after{
+  content:"◆";
+  position:absolute;
+  left:30px;
+  top:29px;
+  color:#dfffff;
+  font-size:29px;
+  text-shadow:0 0 12px #8ff;
+}
+
+/* SUPERMAN */
 
 .superman .head{
-  background:#bd7b58;
-  border:3px solid #512f24;
-}
-
-.superman .head:before{
-  content:"";
-
-  position:absolute;
-
-  top:-8px;
-  left:7px;
-
-  width:58px;
-  height:23px;
-
-  background:#171717;
-
-  border-radius:60% 40% 30% 20%;
-  transform:rotate(-8deg);
+  background:#bd7c59;
 }
 
 .superman .body{
-  background:
-    linear-gradient(
-      #1768c4 0 70%,
-      #c31d2d 71%
-    );
+  background:linear-gradient(#1764c0,#0b3471);
+  border:3px solid #e11d2e;
+}
 
-  border:3px solid #092d65;
+.superman .arm{
+  background:#1764c0;
+}
+
+.superman .leg{
+  background:#14264b;
+}
+
+.superman .hand{
+  background:#bd7c59;
+}
+
+.superman .boot{
+  background:#9e1523;
 }
 
 .superman .body:after{
   content:"S";
-
   position:absolute;
-
-  left:30px;
-  top:18px;
-
+  left:28px;
+  top:25px;
   font-size:38px;
   font-weight:900;
-
-  color:#ffd72d;
-  text-shadow:1px 1px 0 #8c111c;
+  color:#ffd928;
 }
 
-.superman .arm{
-  background:#1768c4;
-  border:3px solid #092d65;
-}
-
-.superman .leg{
-  background:#16366a;
-  border:3px solid #081a36;
-}
-
-/* =========================
-   FLASH
-========================= */
+/* FLASH */
 
 .flash .head{
-  background:#c90000;
-  border:3px solid #600000;
+  background:#9d5f46;
 }
 
 .flash .body,
-.flash .arm{
-  background:#d10000;
-  border:3px solid #640000;
+.flash .arm,
+.flash .leg{
+  background:linear-gradient(135deg,#e00000,#700000);
+  border:2px solid #ffce00;
+}
+
+.flash .hand,
+.flash .boot{
+  background:#d60000;
+  border:2px solid #ffd000;
 }
 
 .flash .body:after{
   content:"⚡";
-
-  position:absolute;
-
-  left:29px;
-  top:27px;
-
-  font-size:35px;
-  color:#ffd82e;
-}
-
-.flash .leg{
-  background:#b70000;
-  border:3px solid #640000;
-}
-
-/* =========================
-   NINJA
-========================= */
-
-.ninja .head{
-  background:#151515;
-  border:4px solid #050505;
-}
-
-.ninja .head:after{
-  content:"";
-
-  position:absolute;
-
-  left:8px;
-  top:48px;
-
-  width:54px;
-  height:12px;
-
-  background:#d8d8d8;
-  opacity:.9;
-}
-
-.ninja .body{
-  background:
-    linear-gradient(
-      135deg,
-      #252525,
-      #080808
-    );
-
-  border:3px solid #5b6cff;
-}
-
-.ninja .arm{
-  background:#171717;
-  border:3px solid #5b6cff;
-}
-
-.ninja .leg{
-  background:#111;
-  border:3px solid #343b65;
-}
-
-/* =========================
-   ROBÔ
-========================= */
-
-.robot .head{
-  background:
-    linear-gradient(
-      #c7d0da,
-      #5c6875
-    );
-
-  border:3px solid #8df1ff;
-  border-radius:18px;
-}
-
-.robot .eye{
-  background:#62efff;
-  box-shadow:0 0 10px #62efff;
-}
-
-.robot .body{
-  background:
-    linear-gradient(
-      135deg,
-      #9faab5,
-      #303942
-    );
-
-  border:3px solid #70eaff;
-  border-radius:17px;
-}
-
-.robot .body:after{
-  content:"◈";
-
-  position:absolute;
-
-  left:34px;
-  top:32px;
-
-  color:#7cf4ff;
-  font-size:29px;
-}
-
-.robot .arm,
-.robot .leg{
-  background:#697580;
-  border:3px solid #6eeaff;
-}
-
-/* =========================
-   MAGO
-========================= */
-
-.mage .head{
-  background:#a56e50;
-  border:3px solid #43291f;
-}
-
-.mage .body{
-  background:
-    linear-gradient(
-      135deg,
-      #6721a0,
-      #21082f
-    );
-
-  border:3px solid #b96cff;
-}
-
-.mage .body:after{
-  content:"✦";
-
-  position:absolute;
-
-  left:32px;
-  top:30px;
-
-  font-size:32px;
-
-  color:#e8a0ff;
-
-  text-shadow:0 0 14px #cf4dff;
-}
-
-.mage .arm,
-.mage .leg{
-  background:#34104f;
-  border:3px solid #9c4be0;
-}
-
-/* =========================
-   COSMICO
-========================= */
-
-.cosmic .head{
-  background:
-    radial-gradient(
-      circle at 35% 30%,
-      #9effff,
-      #4c48bd 70%
-    );
-
-  border:3px solid #8fffff;
-}
-
-.cosmic .body{
-  background:
-    linear-gradient(
-      135deg,
-      #2637ad,
-      #150633
-    );
-
-  border:3px solid #75f5ff;
-}
-
-.cosmic .body:after{
-  content:"✦";
-
-  position:absolute;
-  left:32px;
-  top:29px;
-
-  color:#9effff;
-  font-size:33px;
-
-  text-shadow:
-    0 0 10px #6ff,
-    0 0 20px #7a5cff;
-}
-
-.cosmic .arm,
-.cosmic .leg{
-  background:#17227b;
-  border:3px solid #5beaff;
-}
-
-/* =========================
-   DRAGÃO
-========================= */
-
-.dragon .head{
-  background:#b9341c;
-  border:3px solid #4a1009;
-
-  border-radius:42% 42% 35% 35%;
-}
-
-.dragon .head:before,
-.dragon .head:after{
-  content:"";
-
-  position:absolute;
-
-  top:-13px;
-
-  width:25px;
-  height:25px;
-
-  background:#8d2514;
-
-  clip-path:polygon(50% 0,100% 100%,0 100%);
-}
-
-.dragon .head:before{left:4px}
-.dragon .head:after{right:4px}
-
-.dragon .body,
-.dragon .arm{
-  background:
-    linear-gradient(
-      135deg,
-      #c2381b,
-      #55120c
-    );
-
-  border:3px solid #4a1009;
-}
-
-.dragon .body:after{
-  content:"🐲";
-
   position:absolute;
   left:29px;
   top:28px;
   font-size:31px;
+  color:#ffe000;
 }
 
+/* CAPITÃO */
+
+.cap .head{
+  background:#b87958;
+}
+
+.cap .body{
+  background:linear-gradient(135deg,#1d63a9,#102d62);
+  border:3px solid #eee;
+}
+
+.cap .arm{
+  background:#1b5897;
+}
+
+.cap .leg{
+  background:#26334e;
+}
+
+.cap .hand{
+  background:#b87958;
+}
+
+.cap .boot{
+  background:#202631;
+}
+
+.cap .body:after{
+  content:"★";
+  position:absolute;
+  left:28px;
+  top:29px;
+  color:white;
+  font-size:34px;
+}
+
+/* NINJA */
+
+.ninja .head{
+  background:#1a1a1d;
+}
+
+.ninja .body,
+.ninja .arm,
+.ninja .leg{
+  background:linear-gradient(135deg,#31313a,#09090c);
+  border:2px solid #566bff;
+}
+
+.ninja .hand,
+.ninja .boot{
+  background:#08080a;
+  border:2px solid #566bff;
+}
+
+.ninja .body:after{
+  content:"✦";
+  position:absolute;
+  left:31px;
+  top:29px;
+  color:#7888ff;
+  font-size:27px;
+}
+
+/* ROBÔ */
+
+.robot .head,
+.robot .body,
+.robot .arm,
+.robot .leg{
+  background:linear-gradient(135deg,#d2d8df,#424a56);
+  border:2px solid #6cecff;
+}
+
+.robot .hand,
+.robot .boot{
+  background:#65717e;
+  border:2px solid #6cecff;
+}
+
+.robot .body:after{
+  content:"◈";
+  position:absolute;
+  left:29px;
+  top:29px;
+  color:#67edff;
+  font-size:30px;
+}
+
+/* ALIEN */
+
+.alien .head{
+  background:linear-gradient(135deg,#87ff8d,#16783c);
+}
+
+.alien .body,
+.alien .arm{
+  background:linear-gradient(135deg,#238f54,#10452c);
+  border:2px solid #65ff9a;
+}
+
+.alien .leg{
+  background:#123f2a;
+  border:2px solid #65ff9a;
+}
+
+.alien .hand{
+  background:#52c978;
+}
+
+.alien .boot{
+  background:#0b2419;
+}
+
+/* MAGO */
+
+.mage .head{
+  background:#8b5a43;
+}
+
+.mage .body,
+.mage .arm,
+.mage .leg{
+  background:linear-gradient(135deg,#6d27a8,#210b45);
+  border:2px solid #d58aff;
+}
+
+.mage .hand{
+  background:#8b5a43;
+}
+
+.mage .boot{
+  background:#170728;
+}
+
+.mage .body:after{
+  content:"✦";
+  position:absolute;
+  left:29px;
+  top:28px;
+  color:#efb3ff;
+  font-size:32px;
+}
+
+/* NINJA SOMBRIO */
+
+.darkninja .head,
+.darkninja .body,
+.darkninja .arm,
+.darkninja .leg{
+  background:linear-gradient(135deg,#15151b,#020204);
+  border:2px solid #a500ff;
+}
+
+.darkninja .hand,
+.darkninja .boot{
+  background:#030305;
+  border:2px solid #a500ff;
+}
+
+.darkninja .body:after{
+  content:"☠";
+  position:absolute;
+  left:28px;
+  top:29px;
+  color:#c000ff;
+  font-size:29px;
+}
+
+/* TITÃ */
+
+.titan .head,
+.titan .body,
+.titan .arm,
+.titan .leg{
+  background:linear-gradient(135deg,#667080,#171c27);
+  border:2px solid #b9c9ff;
+}
+
+.titan .hand,
+.titan .boot{
+  background:#323b4a;
+  border:2px solid #9aaeff;
+}
+
+/* CÓSMICO */
+
+.cosmic .head{
+  background:linear-gradient(135deg,#6eeaff,#5143b9);
+}
+
+.cosmic .body,
+.cosmic .arm,
+.cosmic .leg{
+  background:linear-gradient(135deg,#2c42c4,#17073f);
+  border:2px solid #7ffaff;
+}
+
+.cosmic .hand,
+.cosmic .boot{
+  background:#242c8d;
+  border:2px solid #7ffaff;
+}
+
+.cosmic .body:after{
+  content:"✦";
+  position:absolute;
+  left:28px;
+  top:28px;
+  color:#91ffff;
+  font-size:31px;
+}
+
+/* DRAGÃO */
+
+.dragon .head,
+.dragon .body,
+.dragon .arm,
 .dragon .leg{
-  background:#64150d;
-  border:3px solid #3d0b07;
+  background:linear-gradient(135deg,#d64025,#4c0e0b);
+  border:2px solid #ff9a28;
 }
 
-/* =========================
-   DANÇAS
-========================= */
+.dragon .hand,
+.dragon .boot{
+  background:#68150e;
+  border:2px solid #ff9a28;
+}
+
+.dragon .body:after{
+  content:"🐲";
+  position:absolute;
+  left:25px;
+  top:28px;
+  font-size:31px;
+}
+
+/* =====================================================
+   ANIMAÇÃO DE ENTRADA
+===================================================== */
+
+.enter{
+  display:block!important;
+  animation:
+    entrance 1.25s cubic-bezier(.16,.82,.25,1) forwards;
+}
+
+@keyframes entrance{
+  0%{
+    opacity:0;
+    transform:
+      translate(-170%,30px)
+      rotate(-12deg)
+      scale(.5);
+  }
+
+  65%{
+    opacity:1;
+    transform:
+      translate(-45%,0)
+      rotate(4deg)
+      scale(1.08);
+  }
+
+  100%{
+    opacity:1;
+    transform:
+      translate(-50%,0)
+      rotate(0)
+      scale(1);
+  }
+}
+
+/* =====================================================
+   DANÇA — BRAÇOS + PERNAS + CORPO
+===================================================== */
 
 .dance{
   display:block!important;
+  animation:bodyDance .48s infinite alternate ease-in-out;
 }
 
-/* padrão */
+.dance .head{
+  animation:headDance .48s infinite alternate ease-in-out;
+}
 
 .dance .arm.l{
-  animation:armLeft .55s infinite alternate ease-in-out;
+  animation:armLeft .42s infinite alternate ease-in-out;
 }
 
 .dance .arm.r{
-  animation:armRight .55s infinite alternate ease-in-out;
+  animation:armRight .42s infinite alternate ease-in-out;
 }
 
 .dance .leg.l{
-  animation:legLeft .55s infinite alternate ease-in-out;
+  animation:legLeft .48s infinite alternate ease-in-out;
 }
 
 .dance .leg.r{
-  animation:legRight .55s infinite alternate ease-in-out;
-}
-
-@keyframes armLeft{
-  from{transform:rotate(28deg)}
-  to{transform:rotate(-45deg)}
-}
-
-@keyframes armRight{
-  from{transform:rotate(-28deg)}
-  to{transform:rotate(45deg)}
-}
-
-@keyframes legLeft{
-  from{transform:rotate(5deg)}
-  to{transform:rotate(-8deg)}
-}
-
-@keyframes legRight{
-  from{transform:rotate(-5deg)}
-  to{transform:rotate(8deg)}
-}
-
-/* corpo dançando */
-
-.dance{
-  animation:
-    bodyDance .7s infinite alternate ease-in-out;
+  animation:legRight .48s infinite alternate ease-in-out;
 }
 
 @keyframes bodyDance{
   0%{
-    transform:translate(-50%,0) rotate(-4deg) scale(1);
-  }
-
-  50%{
-    transform:translate(-50%,-13px) rotate(3deg) scale(1.035);
-  }
-
-  100%{
-    transform:translate(-50%,0) rotate(5deg) scale(1);
-  }
-}
-
-/* aranha: dança acrobática */
-
-.spider.dance{
-  animation:
-    spiderDance .65s infinite alternate ease-in-out;
-}
-
-@keyframes spiderDance{
-  0%{
-    transform:translate(-50%,0) rotate(-7deg) scale(1);
-  }
-
-  50%{
-    transform:translate(-50%,-24px) rotate(7deg) scale(1.05);
-  }
-
-  100%{
-    transform:translate(-50%,4px) rotate(-4deg) scale(1);
-  }
-}
-
-/* Hulk: pesada */
-
-.hulk.dance{
-  animation:
-    hulkDance .8s infinite alternate ease-in-out;
-}
-
-@keyframes hulkDance{
-  0%{
-    transform:translate(-50%,0) scale(1);
-  }
-
-  50%{
-    transform:translate(-50%,-8px) scale(1.08);
-  }
-
-  100%{
-    transform:translate(-50%,2px) scale(.98);
-  }
-}
-
-/* Batman */
-
-.batman.dance{
-  animation:
-    batDance .9s infinite alternate ease-in-out;
-}
-
-@keyframes batDance{
-  0%{
-    transform:translate(-50%,0) rotate(-3deg);
-  }
-
-  50%{
-    transform:translate(-50%,-15px) rotate(3deg);
-  }
-
-  100%{
-    transform:translate(-50%,0) rotate(-2deg);
-  }
-}
-
-/* Homem de Ferro */
-
-.iron.dance{
-  animation:
-    ironDance .5s infinite alternate ease-in-out;
-}
-
-@keyframes ironDance{
-  0%{
-    transform:translate(-50%,0) rotate(-4deg);
-  }
-
-  100%{
-    transform:translate(-50%,-15px) rotate(4deg) scale(1.05);
-  }
-}
-
-/* =========================
-   ENTRADA
-========================= */
-
-.enter{
-  display:block!important;
-
-  animation:
-    enterStage 1.35s cubic-bezier(.12,.82,.2,1) forwards;
-}
-
-@keyframes enterStage{
-
-  0%{
     transform:
-      translate(-160%,80px)
-      rotate(-18deg)
-      scale(.45);
-
-    opacity:0;
-  }
-
-  55%{
-    transform:
-      translate(-45%,-8px)
-      rotate(6deg)
-      scale(1.07);
-
-    opacity:1;
-  }
-
-  75%{
-    transform:
-      translate(-53%,4px)
+      translate(-50%,0)
       rotate(-3deg)
-      scale(.98);
+      scale(1);
+  }
+
+  50%{
+    transform:
+      translate(-50%,-13px)
+      rotate(3deg)
+      scale(1.035);
   }
 
   100%{
     transform:
       translate(-50%,0)
-      rotate(0)
+      rotate(-3deg)
       scale(1);
-
-    opacity:1;
   }
 }
 
-/* =========================
+@keyframes headDance{
+  from{
+    transform:rotate(-5deg);
+  }
+  to{
+    transform:rotate(6deg);
+  }
+}
+
+@keyframes armLeft{
+  from{
+    transform:rotate(22deg);
+  }
+  to{
+    transform:rotate(-48deg);
+  }
+}
+
+@keyframes armRight{
+  from{
+    transform:rotate(-22deg);
+  }
+  to{
+    transform:rotate(48deg);
+  }
+}
+
+@keyframes legLeft{
+  from{
+    transform:rotate(-9deg);
+  }
+  to{
+    transform:rotate(16deg);
+  }
+}
+
+@keyframes legRight{
+  from{
+    transform:rotate(9deg);
+  }
+  to{
+    transform:rotate(-16deg);
+  }
+}
+
+/* =====================================================
    SAÍDA
-========================= */
+===================================================== */
 
 .exit{
   display:block!important;
+  animation:exitStage 1.35s cubic-bezier(.7,0,.9,.2) forwards;
+}
 
-  animation:
-    exitStage 1.25s cubic-bezier(.65,0,.9,.25) forwards;
+.exit .arm.l{
+  animation:none;
+  transform:rotate(-35deg);
+}
+
+.exit .arm.r{
+  animation:none;
+  transform:rotate(35deg);
 }
 
 @keyframes exitStage{
-
   0%{
+    opacity:1;
     transform:
       translate(-50%,0)
-      rotate(0)
       scale(1);
-
-    opacity:1;
   }
 
-  35%{
+  30%{
     transform:
-      translate(-42%,-20px)
-      rotate(-5deg)
+      translate(-48%,-18px)
       scale(1.04);
   }
 
   100%{
-    transform:
-      translate(155%,45px)
-      rotate(18deg)
-      scale(.55);
-
     opacity:0;
+    transform:
+      translate(155%,30px)
+      rotate(12deg)
+      scale(.58);
   }
 }
 
-/* =========================
+/* =====================================================
    CONTROLES
-========================= */
+===================================================== */
 
 #controls{
   padding:14px;
@@ -1147,14 +959,14 @@ html,body{
   color:white;
   background:#111;
 
-  border:1px solid #303030;
-  border-radius:13px;
+  border:1px solid #333;
+  border-radius:12px;
 
   outline:none;
 }
 
 #cmd:focus{
-  border-color:#7448ff;
+  border-color:#7040ff;
 }
 
 button{
@@ -1166,18 +978,17 @@ button{
   background:
     linear-gradient(
       90deg,
-      #6825ff,
+      #6524ff,
       #ff1744
     );
 
-  color:white;
-
+  color:#fff;
   font-weight:bold;
 }
 
-/* =========================
-   BOTÕES
-========================= */
+/* =====================================================
+   TESTES
+===================================================== */
 
 #tests{
   padding:12px;
@@ -1201,16 +1012,13 @@ button{
   font-size:12px;
 }
 
-/* =========================
-   QUADRADOS PRETOS
-========================= */
+/* =====================================================
+   QUADRADOS
+===================================================== */
 
 #boxes{
   display:grid;
-
-  grid-template-columns:
-    repeat(3,1fr);
-
+  grid-template-columns:repeat(3,1fr);
   gap:10px;
 
   padding:12px;
@@ -1223,41 +1031,42 @@ button{
 
   background:#000;
 
-  border:
-    1px solid #1b1b1b;
+  border:1px solid #202020;
 
   border-radius:12px;
 }
 
-/* =========================
+/* =====================================================
    CELULAR
-========================= */
+===================================================== */
 
 @media(max-width:600px){
 
   #stage{
-    height:67vh;
+    height:66vh;
     min-height:430px;
   }
 
   #character{
-    transform:
-      translateX(-50%)
-      scale(.78);
-  }
-
-  .test{
-    font-size:11px;
+    transform:translateX(-50%) scale(.82);
   }
 
   #status{
     font-size:12px;
+  }
+
+  .test{
+    font-size:11px;
   }
 }
 </style>
 </head>
 
 <body>
+
+<!-- ===================================================
+     PALCO
+=================================================== -->
 
 <div id="stage">
 
@@ -1270,9 +1079,11 @@ button{
 
   <div id="name"></div>
 
+  <!-- PERSONAGEM -->
   <div id="character">
 
     <div class="head">
+      <div class="hair"></div>
       <span class="eye l"></span>
       <span class="eye r"></span>
     </div>
@@ -1282,13 +1093,22 @@ button{
     <div class="arm l"></div>
     <div class="arm r"></div>
 
+    <div class="hand l"></div>
+    <div class="hand r"></div>
+
     <div class="leg l"></div>
     <div class="leg r"></div>
+
+    <div class="boot l"></div>
+    <div class="boot r"></div>
 
   </div>
 
 </div>
 
+<!-- ===================================================
+     COMANDO
+=================================================== -->
 
 <div id="controls">
 
@@ -1303,6 +1123,9 @@ button{
 
 </div>
 
+<!-- ===================================================
+     PERSONAGENS
+=================================================== -->
 
 <div id="tests">
 
@@ -1337,6 +1160,11 @@ button{
   </button>
 
   <button class="test"
+    onclick="iniciarPorNome('capitao america')">
+    🛡️ Capitão
+  </button>
+
+  <button class="test"
     onclick="iniciarPorNome('ninja')">
     🥷 Ninja
   </button>
@@ -1347,8 +1175,23 @@ button{
   </button>
 
   <button class="test"
+    onclick="iniciarPorNome('alien')">
+    👽 Alien
+  </button>
+
+  <button class="test"
     onclick="iniciarPorNome('mago')">
     🧙 Mago
+  </button>
+
+  <button class="test"
+    onclick="iniciarPorNome('ninja sombrio')">
+    🥷 Sombrio
+  </button>
+
+  <button class="test"
+    onclick="iniciarPorNome('titan')">
+    🤖 Titã
   </button>
 
   <button class="test"
@@ -1363,6 +1206,9 @@ button{
 
 </div>
 
+<!-- ===================================================
+     QUADRADOS PRETOS
+=================================================== -->
 
 <div id="boxes">
 
@@ -1372,14 +1218,13 @@ button{
 
 </div>
 
-
 <script>
 
-/* =========================
+/* =====================================================
    PERSONAGENS
-========================= */
+===================================================== */
 
-const personagens={
+const personagens = {
 
   "homem aranha":{
     nome:"Aranha Urbano",
@@ -1421,6 +1266,11 @@ const personagens={
     classe:"flash"
   },
 
+  "capitao america":{
+    nome:"Capitão América",
+    classe:"cap"
+  },
+
   "ninja":{
     nome:"Ninja Futurista",
     classe:"ninja"
@@ -1431,9 +1281,24 @@ const personagens={
     classe:"robot"
   },
 
+  "alien":{
+    nome:"Alienígena",
+    classe:"alien"
+  },
+
   "mago":{
     nome:"Mago Arcano",
     classe:"mage"
+  },
+
+  "ninja sombrio":{
+    nome:"Ninja Sombrio",
+    classe:"darkninja"
+  },
+
+  "titan":{
+    nome:"Titã Robótico",
+    classe:"titan"
   },
 
   "cosmico":{
@@ -1448,10 +1313,9 @@ const personagens={
 
 };
 
-
-/* =========================
+/* =====================================================
    NORMALIZAÇÃO
-========================= */
+===================================================== */
 
 function normalizar(texto){
 
@@ -1463,34 +1327,30 @@ function normalizar(texto){
 
 }
 
-
-/* =========================
-   TESTE
-========================= */
+/* =====================================================
+   TESTAR
+===================================================== */
 
 function testar(){
 
-  const valor=
+  const valor =
     document.getElementById("cmd").value;
 
   iniciarPorNome(valor);
 
   document.getElementById("cmd").value="";
+
 }
 
-
-/* =========================
-   INICIAR
-========================= */
-
-let ocupado=false;
+/* =====================================================
+   INICIAR POR NOME
+===================================================== */
 
 function iniciarPorNome(valor){
 
   const chave=normalizar(valor);
 
-  const personagem=
-    personagens[chave];
+  const personagem=personagens[chave];
 
   if(!personagem){
 
@@ -1501,12 +1361,14 @@ function iniciarPorNome(valor){
   }
 
   iniciar(personagem);
+
 }
 
+/* =====================================================
+   ANIMAÇÃO
+===================================================== */
 
-/* =========================
-   SEQUÊNCIA
-========================= */
+let ocupado=false;
 
 function iniciar(personagem){
 
@@ -1529,33 +1391,27 @@ function iniciar(personagem){
   const status=
     document.getElementById("status");
 
-
-  /* limpar animações */
+  /* limpar animações anteriores */
 
   hero.className="";
 
   void hero.offsetWidth;
 
+  /* personagem */
 
-  /* nome */
+  hero.className=
+    personagem.classe+" enter";
 
   name.textContent=
     personagem.nome;
 
   name.style.display="block";
 
-
-  /* ENTRADA */
-
-  hero.className=
-    personagem.classe+" enter";
-
   status.textContent=
     "🚪 "+personagem.nome+
     " entrou no palco";
 
-
-  /* DANÇA */
+  /* começa a dança */
 
   setTimeout(()=>{
 
@@ -1568,8 +1424,7 @@ function iniciar(personagem){
 
   },1400);
 
-
-  /* SAÍDA */
+  /* saída */
 
   setTimeout(()=>{
 
@@ -1582,15 +1437,13 @@ function iniciar(personagem){
 
   },6500);
 
-
-  /* RESET */
+  /* reset */
 
   setTimeout(()=>{
 
     hero.style.display="none";
 
-    hero.className=
-      personagem.classe;
+    hero.className="";
 
     name.style.display="none";
 
@@ -1599,14 +1452,13 @@ function iniciar(personagem){
 
     ocupado=false;
 
-  },7800);
+  },7900);
 
 }
 
-
-/* =========================
-   PRESENTES
-========================= */
+/* =====================================================
+   PRESENTES DO TIKTOK
+===================================================== */
 
 const presentes={
 
@@ -1628,6 +1480,9 @@ const presentes={
   "lightning":"flash",
   "raio":"flash",
 
+  "shield":"capitao america",
+  "escudo":"capitao america",
+
   "star":"mago",
   "estrela":"mago",
 
@@ -1636,10 +1491,9 @@ const presentes={
 
 };
 
-
-/* =========================
-   EVENTO DE PRESENTE
-========================= */
+/* =====================================================
+   RECEBER PRESENTE
+===================================================== */
 
 function receberPresenteTikTok(nomePresente){
 
@@ -1662,35 +1516,30 @@ function receberPresenteTikTok(nomePresente){
 
 }
 
-
-/* ENTER */
+/* =====================================================
+   ENTER NO TECLADO
+===================================================== */
 
 document
   .getElementById("cmd")
   .addEventListener(
     "keydown",
     e=>{
-      if(e.key==="Enter") testar();
+
+      if(e.key==="Enter"){
+        testar();
+      }
+
     }
   );
 
+/* =====================================================
+   TESTE AUTOMÁTICO DO PRESENTE
 
-/*
-=====================================
-TESTE DO SISTEMA DE PRESENTES
+   No console:
+   receberPresenteTikTok("rosa");
 
-No console do navegador:
-
-receberPresenteTikTok("rosa");
-
-receberPresenteTikTok("lion");
-
-receberPresenteTikTok("crown");
-
-receberPresenteTikTok("rocket");
-
-=====================================
-*/
+===================================================== */
 
 </script>
 
