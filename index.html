@@ -2,56 +2,45 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport"
-content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-
-<title>LIVE Stage V8 • 3D</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>LIVE STAGE 3D</title>
 
 <style>
-*{
-  box-sizing:border-box;
-  -webkit-tap-highlight-color:transparent;
-}
+*{box-sizing:border-box}
 
 html,body{
   margin:0;
   width:100%;
-  min-height:100%;
+  height:100%;
+  overflow-x:hidden;
   background:#000;
   color:#fff;
   font-family:Arial,Helvetica,sans-serif;
-  overflow-x:hidden;
 }
 
 body{
   background:
-    radial-gradient(circle at 50% 0%,#15151d 0,#000 45%);
+    radial-gradient(circle at 50% 0%,#171722,#000 55%);
 }
-
-/* =========================
-   PALCO
-========================= */
 
 #stage{
   position:relative;
   width:100%;
-  height:72vh;
-  min-height:500px;
+  height:70vh;
+  min-height:480px;
   overflow:hidden;
 
   background:
     linear-gradient(
-      rgba(0,0,0,.15),
-      rgba(0,0,0,.58)
+      rgba(0,0,0,.05),
+      rgba(0,0,0,.55)
     ),
     url("fundo.jpg") center/cover no-repeat;
-
-  border-bottom:1px solid #25252b;
 }
 
 /* brilho cinematográfico */
 
-#stage:before{
+#stage:after{
   content:"";
   position:absolute;
   inset:0;
@@ -59,233 +48,209 @@ body{
 
   background:
     radial-gradient(
-      ellipse at center 55% 65%,
-      rgba(255,0,55,.18),
+      ellipse at 50% 80%,
+      rgba(255,0,60,.18),
       transparent 42%
     ),
     radial-gradient(
-      ellipse at center 35% 20%,
-      rgba(0,100,255,.12),
-      transparent 35%
+      ellipse at 50% 20%,
+      rgba(0,110,255,.15),
+      transparent 40%
     );
+
+  z-index:3;
 }
 
-/* =========================
-   LUZES
-========================= */
+/* luzes */
 
-.beam{
+.light{
   position:absolute;
-  top:-30%;
   width:18%;
-  height:170%;
-  opacity:.16;
-  filter:blur(22px);
-  pointer-events:none;
+  height:160%;
+  top:-35%;
+  opacity:.17;
+  filter:blur(25px);
   transform-origin:top center;
-  mix-blend-mode:screen;
+  z-index:2;
+  pointer-events:none;
 }
 
-.beam.blue{
-  left:12%;
+.light.blue{
+  left:8%;
   background:linear-gradient(
     to bottom,
-    rgba(0,130,255,.9),
+    #008cff,
     transparent
   );
   transform:rotate(18deg);
-  animation:lightMove 4s ease-in-out infinite alternate;
+  animation:beamBlue 4s infinite alternate ease-in-out;
 }
 
-.beam.red{
-  right:12%;
+.light.red{
+  right:8%;
   background:linear-gradient(
     to bottom,
-    rgba(255,0,45,.9),
+    #ff003c,
     transparent
   );
   transform:rotate(-18deg);
-  animation:lightMove2 4.7s ease-in-out infinite alternate;
+  animation:beamRed 4.5s infinite alternate ease-in-out;
 }
 
-@keyframes lightMove{
+@keyframes beamBlue{
   from{transform:rotate(10deg)}
-  to{transform:rotate(25deg)}
+  to{transform:rotate(27deg)}
 }
 
-@keyframes lightMove2{
+@keyframes beamRed{
   from{transform:rotate(-10deg)}
-  to{transform:rotate(-25deg)}
+  to{transform:rotate(-27deg)}
 }
 
-/* =========================
-   STATUS
-========================= */
+/* status */
 
 #status{
   position:absolute;
-  top:16px;
+  top:15px;
   left:50%;
   transform:translateX(-50%);
 
-  z-index:100;
+  z-index:50;
 
-  padding:10px 18px;
-  border-radius:999px;
+  padding:9px 16px;
+  border-radius:30px;
 
-  background:rgba(5,5,8,.78);
-  backdrop-filter:blur(14px);
-
+  background:rgba(0,0,0,.72);
   border:1px solid rgba(255,255,255,.15);
 
-  box-shadow:
-    0 8px 30px rgba(0,0,0,.35);
+  backdrop-filter:blur(15px);
 
-  font-size:13px;
+  font-size:12px;
   font-weight:bold;
+
   white-space:nowrap;
 }
 
-/* =========================
-   NOME
-========================= */
+/* nome */
 
 #name{
   position:absolute;
+  bottom:9%;
   left:50%;
-  bottom:11%;
   transform:translateX(-50%);
 
-  z-index:100;
+  z-index:50;
 
   padding:9px 18px;
 
   border-radius:14px;
 
   background:rgba(0,0,0,.78);
-  border:1px solid rgba(255,255,255,.18);
+  border:1px solid rgba(255,255,255,.2);
 
   backdrop-filter:blur(12px);
 
-  font-size:15px;
-  font-weight:800;
+  font-size:14px;
+  font-weight:900;
 
   display:none;
-
-  box-shadow:
-    0 10px 35px rgba(0,0,0,.5);
 }
 
-/* =========================
-   CONTAINER 3D
-========================= */
+/* 3D */
 
-#character3d{
+#character{
   position:absolute;
   inset:0;
-  z-index:30;
-
-  pointer-events:none;
+  z-index:20;
 
   opacity:0;
+
+  pointer-events:none;
 }
 
-#character3d canvas{
+#character canvas{
   display:block;
   width:100%!important;
   height:100%!important;
 }
 
-/* =========================
-   EFEITO ENTRADA
-========================= */
+/* entrada */
 
-#character3d.enter{
-  animation:
-    characterEnter 1.25s cubic-bezier(.16,.9,.2,1)
-    forwards;
+.enter{
+  animation:enter 1.2s cubic-bezier(.15,.9,.2,1) forwards;
 }
 
-@keyframes characterEnter{
+@keyframes enter{
 
   0%{
     opacity:0;
     transform:
-      translateX(-45vw)
-      translateY(50px)
-      scale(.65);
+      translateX(-42vw)
+      scale(.65)
+      rotate(-12deg);
   }
 
   60%{
     opacity:1;
     transform:
       translateX(25px)
-      translateY(-8px)
-      scale(1.05);
+      scale(1.06)
+      rotate(4deg);
   }
 
   100%{
     opacity:1;
     transform:
       translateX(0)
-      translateY(0)
-      scale(1);
+      scale(1)
+      rotate(0);
   }
 }
 
-/* =========================
-   DANÇA
-========================= */
+/* dança */
 
-#character3d.dance{
+.dance{
   opacity:1;
-  animation:
-    danceBody .48s ease-in-out infinite alternate;
+  animation:dance .55s infinite alternate ease-in-out;
 }
 
-@keyframes danceBody{
+@keyframes dance{
 
   0%{
-    transform:
-      translateY(0)
-      rotate(-2deg)
-      scale(1);
-  }
-
-  50%{
-    transform:
-      translateY(-13px)
-      rotate(3deg)
-      scale(1.025);
-  }
-
-  100%{
     transform:
       translateY(0)
       rotate(-3deg)
       scale(1);
   }
+
+  50%{
+    transform:
+      translateY(-15px)
+      rotate(3deg)
+      scale(1.035);
+  }
+
+  100%{
+    transform:
+      translateY(0)
+      rotate(-4deg)
+      scale(1);
+  }
 }
 
-/* =========================
-   SAÍDA
-========================= */
+/* saída */
 
-#character3d.exit{
+.exit{
   opacity:1;
-
-  animation:
-    characterExit 1.25s cubic-bezier(.7,0,.9,.2)
-    forwards;
+  animation:exit 1.15s cubic-bezier(.7,0,.9,.2) forwards;
 }
 
-@keyframes characterExit{
+@keyframes exit{
 
   0%{
     opacity:1;
     transform:
       translateX(0)
-      translateY(0)
       scale(1);
   }
 
@@ -293,125 +258,88 @@ body{
     opacity:0;
     transform:
       translateX(48vw)
-      translateY(30px)
-      scale(.65);
+      scale(.65)
+      rotate(12deg);
   }
 }
 
-/* =========================
-   CONTROLES
-========================= */
+/* controles */
 
 #controls{
-  padding:13px;
-
   display:flex;
   gap:8px;
+  padding:12px;
 
-  background:
-    linear-gradient(#070709,#030303);
-
-  border-bottom:1px solid #17171b;
+  background:#050505;
+  border-bottom:1px solid #191919;
 }
 
 #cmd{
   flex:1;
   min-width:0;
 
-  padding:14px 15px;
+  padding:14px;
 
   border-radius:13px;
 
-  background:#111216;
+  background:#111;
   color:white;
 
-  border:1px solid #303139;
+  border:1px solid #303030;
   outline:none;
-
-  font-size:14px;
 }
 
 #cmd:focus{
-  border-color:#8b3dff;
-  box-shadow:0 0 0 3px rgba(130,50,255,.12);
+  border-color:#743cff;
 }
 
-button{
-  border:0;
-  color:white;
-
-  font-weight:800;
-
-  cursor:pointer;
-
-  transition:
-    transform .15s,
-    filter .15s;
-}
-
-button:active{
-  transform:scale(.95);
-}
-
-/* =========================
-   BOTÃO TESTAR
-========================= */
-
-#mainTest{
+#test{
   padding:0 18px;
 
+  border:0;
   border-radius:13px;
+
+  color:white;
+  font-weight:900;
 
   background:
     linear-gradient(
       100deg,
-      #6b25ff,
-      #e40042
+      #7027ff,
+      #f00045
     );
-
-  box-shadow:
-    0 8px 25px rgba(105,20,255,.22);
 }
 
-/* =========================
-   TESTES
-========================= */
+/* botões */
 
 #tests{
-  padding:12px;
-
   display:flex;
   flex-wrap:wrap;
   gap:7px;
 
-  background:#050506;
+  padding:12px;
+
+  background:#050505;
 }
 
 .test{
-  padding:9px 11px;
-
+  border:1px solid #292929;
   border-radius:10px;
 
-  background:#121317;
+  background:#121212;
+  color:white;
 
-  border:1px solid #292a30;
+  padding:9px 11px;
 
   font-size:12px;
+  font-weight:bold;
 }
 
-.test:hover{
-  filter:brightness(1.3);
-}
-
-/* =========================
-   3 QUADRADOS
-========================= */
+/* caixas */
 
 #boxes{
   display:grid;
-  grid-template-columns:
-    repeat(3,1fr);
-
+  grid-template-columns:repeat(3,1fr);
   gap:10px;
 
   padding:12px;
@@ -420,21 +348,13 @@ button:active{
 }
 
 .box{
-  height:100px;
+  height:90px;
 
   background:#000;
 
-  border:1px solid #1c1c21;
-
+  border:1px solid #1c1c1c;
   border-radius:13px;
-
-  box-shadow:
-    inset 0 0 20px rgba(255,255,255,.015);
 }
-
-/* =========================
-   CELULAR
-========================= */
 
 @media(max-width:600px){
 
@@ -444,26 +364,7 @@ button:active{
   }
 
   #status{
-    top:12px;
     font-size:11px;
-    padding:8px 13px;
-  }
-
-  #name{
-    bottom:9%;
-    font-size:13px;
-  }
-
-  #controls{
-    padding:10px;
-  }
-
-  #cmd{
-    font-size:13px;
-  }
-
-  #mainTest{
-    padding:0 13px;
   }
 
   .test{
@@ -471,7 +372,7 @@ button:active{
   }
 
   .box{
-    height:82px;
+    height:78px;
   }
 }
 </style>
@@ -479,252 +380,170 @@ button:active{
 
 <body>
 
-<!-- =========================
-     PALCO
-========================= -->
-
 <div id="stage">
 
-  <div class="beam blue"></div>
-  <div class="beam red"></div>
+  <div class="light blue"></div>
+  <div class="light red"></div>
 
   <div id="status">
-    🟢 LIVE Stage • Pronto
+    🟢 LIVE STAGE 3D • PRONTO
   </div>
 
   <div id="name"></div>
 
-  <div id="character3d"></div>
+  <div id="character"></div>
 
 </div>
-
-
-<!-- =========================
-     CONTROLE
-========================= -->
 
 <div id="controls">
 
   <input
     id="cmd"
-    autocomplete="off"
-    placeholder="Digite um personagem..."
+    placeholder="Digite: hulk, batman, aranha..."
   >
 
-  <button
-    id="mainTest"
-    onclick="testar()">
+  <button id="test" onclick="testar()">
     TESTAR
   </button>
 
 </div>
 
-
-<!-- =========================
-     PERSONAGENS
-========================= -->
-
 <div id="tests">
 
   <button class="test"
-    onclick="iniciarPorNome('homem aranha')">
+    onclick="show('homem aranha')">
     🕷️ Aranha
   </button>
 
   <button class="test"
-    onclick="iniciarPorNome('hulk')">
+    onclick="show('hulk')">
     💚 Hulk
   </button>
 
   <button class="test"
-    onclick="iniciarPorNome('batman')">
+    onclick="show('batman')">
     🦇 Batman
   </button>
 
   <button class="test"
-    onclick="iniciarPorNome('homem de ferro')">
+    onclick="show('homem de ferro')">
     🤖 Homem de Ferro
   </button>
 
   <button class="test"
-    onclick="iniciarPorNome('superman')">
+    onclick="show('superman')">
     🦸 Superman
   </button>
 
   <button class="test"
-    onclick="iniciarPorNome('flash')">
+    onclick="show('flash')">
     ⚡ Flash
   </button>
 
   <button class="test"
-    onclick="iniciarPorNome('capitao america')">
-    🛡️ Capitão
-  </button>
-
-  <button class="test"
-    onclick="iniciarPorNome('ninja')">
+    onclick="show('ninja')">
     🥷 Ninja
   </button>
 
   <button class="test"
-    onclick="iniciarPorNome('robo')">
-    🤖 Robô
-  </button>
-
-  <button class="test"
-    onclick="iniciarPorNome('alien')">
+    onclick="show('alien')">
     👽 Alien
   </button>
 
   <button class="test"
-    onclick="iniciarPorNome('mago')">
+    onclick="show('mago')">
     🧙 Mago
   </button>
 
   <button class="test"
-    onclick="iniciarPorNome('ninja sombrio')">
-    🌑 Ninja Sombrio
-  </button>
-
-  <button class="test"
-    onclick="iniciarPorNome('titan')">
-    🦾 Titã
-  </button>
-
-  <button class="test"
-    onclick="iniciarPorNome('cosmico')">
+    onclick="show('cosmico')">
     🌌 Cósmico
   </button>
 
-  <button class="test"
-    onclick="iniciarPorNome('dragao')">
-    🐲 Dragão
-  </button>
-
 </div>
-
-
-<!-- =========================
-     3 QUADRADOS PRETOS
-========================= -->
 
 <div id="boxes">
-
   <div class="box"></div>
   <div class="box"></div>
   <div class="box"></div>
-
 </div>
 
 
-<!-- =========================
-     THREE.JS
-========================= -->
+<!-- THREE.JS -->
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/loaders/GLTFLoader.js"></script>
 
 
 <script>
 
-/* =====================================================
+/* ==========================================
    CONFIGURAÇÃO
-===================================================== */
+========================================== */
 
-const personagens = {
+const MODEL_URL =
+"https://pub-2534e921bf9c4314addcd4d8a6e98b7b.r2.dev/avatars/mixamo/glb/y-bot.glb";
+
+
+const personagens={
 
   "homem aranha":{
     nome:"Aranha Urbano",
-    tipo:"spider"
-  },
-
-  "aranha urbano":{
-    nome:"Aranha Urbano",
-    tipo:"spider"
+    cor:0xb40024
   },
 
   "hulk":{
     nome:"Hulk",
-    tipo:"hulk"
+    cor:0x4b9b3b
   },
 
   "batman":{
     nome:"Batman",
-    tipo:"batman"
+    cor:0x111111
   },
 
   "homem de ferro":{
     nome:"Homem de Ferro",
-    tipo:"iron"
+    cor:0xc00018
   },
 
   "superman":{
     nome:"Superman",
-    tipo:"superman"
-  },
-
-  "super man":{
-    nome:"Superman",
-    tipo:"superman"
+    cor:0x185db5
   },
 
   "flash":{
     nome:"Flash",
-    tipo:"flash"
-  },
-
-  "capitao america":{
-    nome:"Capitão América",
-    tipo:"captain"
+    cor:0xd00015
   },
 
   "ninja":{
-    nome:"Ninja Futurista",
-    tipo:"ninja"
-  },
-
-  "robo":{
-    nome:"Robô Futurista",
-    tipo:"robot"
+    nome:"Ninja",
+    cor:0x202030
   },
 
   "alien":{
-    nome:"Alienígena",
-    tipo:"alien"
+    nome:"Alien",
+    cor:0x39b96a
   },
 
   "mago":{
     nome:"Mago Arcano",
-    tipo:"mage"
-  },
-
-  "ninja sombrio":{
-    nome:"Ninja Sombrio",
-    tipo:"darkninja"
-  },
-
-  "titan":{
-    nome:"Titã Robótico",
-    tipo:"titan"
+    cor:0x641b9b
   },
 
   "cosmico":{
     nome:"Guerreiro Cósmico",
-    tipo:"cosmic"
-  },
-
-  "dragao":{
-    nome:"Dragão Guerreiro",
-    tipo:"dragon"
+    cor:0x2635a8
   }
 
 };
 
 
-/* =====================================================
-   PRESENTES → PERSONAGENS
-===================================================== */
+/* presentes */
 
-const presentes = {
+const presentes={
 
   "rose":"homem aranha",
   "rosa":"homem aranha",
@@ -744,70 +563,66 @@ const presentes = {
   "lightning":"flash",
   "raio":"flash",
 
-  "shield":"capitao america",
-  "escudo":"capitao america",
-
-  "star":"mago",
-  "estrela":"mago",
-
-  "dragon":"dragao",
-  "dragao":"dragao",
-
   "ninja":"ninja",
-  "alien":"alien",
+  "star":"mago",
+  "estrela":"mago"
 
-  "robot":"robo",
-  "robo":"robo"
 };
 
 
-/* =====================================================
+/* ==========================================
    THREE
-===================================================== */
+========================================== */
 
 let scene;
 let camera;
 let renderer;
-let personagemAtual;
+let model=null;
+let mixer=null;
+
+let clock=
+  new THREE.Clock();
 
 let ocupado=false;
 
-let clock;
 
-const container =
-  document.getElementById("character3d");
+/* ==========================================
+   INICIAR
+========================================== */
 
+function init(){
 
-/* =====================================================
-   INICIAR 3D
-===================================================== */
+  const container=
+    document.getElementById(
+      "character"
+    );
 
-function iniciar3D(){
-
-  scene =
+  scene=
     new THREE.Scene();
 
-  camera =
+
+  camera=
     new THREE.PerspectiveCamera(
-      35,
-      window.innerWidth /
-      window.innerHeight,
+      32,
+      window.innerWidth/
+      document.getElementById("stage").clientHeight,
       .1,
       100
     );
 
   camera.position.set(
     0,
-    2.2,
-    7
+    1.7,
+    6
   );
 
 
-  renderer =
+  renderer=
     new THREE.WebGLRenderer({
       antialias:true,
       alpha:true
     });
+
 
   renderer.setPixelRatio(
     Math.min(
@@ -816,12 +631,18 @@ function iniciar3D(){
     )
   );
 
+
   renderer.setSize(
     window.innerWidth,
     document.getElementById("stage").clientHeight
   );
 
+
   renderer.shadowMap.enabled=true;
+
+  renderer.shadowMap.type=
+    THREE.PCFSoftShadowMap;
+
 
   container.appendChild(
     renderer.domElement
@@ -830,814 +651,242 @@ function iniciar3D(){
 
   /* iluminação */
 
-  const ambient =
+  const ambiente=
     new THREE.HemisphereLight(
       0xffffff,
-      0x202030,
+      0x101020,
       2
     );
 
-  scene.add(ambient);
+  scene.add(ambiente);
 
 
-  const key =
+  const luzPrincipal=
     new THREE.DirectionalLight(
       0xffffff,
       4
     );
 
-  key.position.set(
+  luzPrincipal.position.set(
     3,
     7,
     5
   );
 
-  key.castShadow=true;
+  luzPrincipal.castShadow=true;
 
-  scene.add(key);
+  scene.add(luzPrincipal);
 
 
-  const red =
+  const luzAzul=
     new THREE.PointLight(
-      0xff003c,
-      35,
+      0x008cff,
+      40,
       12
     );
 
-  red.position.set(
+  luzAzul.position.set(
     -4,
     3,
     2
   );
 
-  scene.add(red);
+  scene.add(luzAzul);
 
 
-  const blue =
+  const luzVermelha=
     new THREE.PointLight(
-      0x168cff,
-      35,
+      0xff003c,
+      40,
       12
     );
 
-  blue.position.set(
+  luzVermelha.position.set(
     4,
     3,
     2
   );
 
-  scene.add(blue);
+  scene.add(luzVermelha);
 
 
-  clock =
-    new THREE.Clock();
+  /* chão */
+
+  const piso=
+    new THREE.Mesh(
+
+      new THREE.CircleGeometry(
+        2.2,
+        64
+      ),
+
+      new THREE.MeshStandardMaterial({
+        color:0x080808,
+        roughness:.4,
+        metalness:.5
+      })
+
+    );
+
+
+  piso.rotation.x=
+    -Math.PI/2;
+
+  piso.position.y=-2.25;
+
+  piso.receiveShadow=true;
+
+  scene.add(piso);
+
+
+  carregarModelo();
 
 
   window.addEventListener(
     "resize",
-    redimensionar
+    resize
   );
 
 
-  animar();
+  animate();
 }
 
 
-/* =====================================================
-   MATERIAL
-===================================================== */
+/* ==========================================
+   MODELO 3D REAL
+========================================== */
 
-function material(cor,metal=0){
+function carregarModelo(){
 
-  return new THREE.MeshStandardMaterial({
+  const loader=
+    new THREE.GLTFLoader();
 
-    color:cor,
 
-    roughness:
-      metal ? .25 : .55,
+  loader.load(
 
-    metalness:
-      metal ? .75 : .05
-  });
-}
+    MODEL_URL,
 
+    function(gltf){
 
-/* =====================================================
-   CRIAR PERSONAGEM
-===================================================== */
+      model=
+        gltf.scene;
 
-function criarPersonagem(tipo){
 
-  const grupo =
-    new THREE.Group();
-
-  grupo.position.y=-2.25;
-
-
-  let cores;
-
-
-  switch(tipo){
-
-    case"spider":
-
-      cores={
-        corpo:0x090909,
-        detalhe:0xb40020,
-        pele:0x111111
-      };
-
-    break;
-
-
-    case"hulk":
-
-      cores={
-        corpo:0x4c9b3c,
-        detalhe:0x552a79,
-        pele:0x5aaa43
-      };
-
-    break;
-
-
-    case"batman":
-
-      cores={
-        corpo:0x111318,
-        detalhe:0x24262c,
-        pele:0x9b694f
-      };
-
-    break;
-
-
-    case"iron":
-
-      cores={
-        corpo:0xa50012,
-        detalhe:0xffc400,
-        pele:0x202020
-      };
-
-    break;
-
-
-    case"superman":
-
-      cores={
-        corpo:0x1761ba,
-        detalhe:0xd7192d,
-        pele:0xb87959
-      };
-
-    break;
-
-
-    case"flash":
-
-      cores={
-        corpo:0xc90015,
-        detalhe:0xffc400,
-        pele:0x9b624c
-      };
-
-    break;
-
-
-    case"captain":
-
-      cores={
-        corpo:0x174b8d,
-        detalhe:0xcfcfcf,
-        pele:0xb87858
-      };
-
-    break;
-
-
-    case"ninja":
-
-      cores={
-        corpo:0x15171d,
-        detalhe:0x4e70ff,
-        pele:0x171717
-      };
-
-    break;
-
-
-    case"robot":
-
-      cores={
-        corpo:0x778493,
-        detalhe:0x6eeaff,
-        pele:0x9ba8b5
-      };
-
-    break;
-
-
-    case"alien":
-
-      cores={
-        corpo:0x187c48,
-        detalhe:0x7dff8d,
-        pele:0x73ff91
-      };
-
-    break;
-
-
-    case"mage":
-
-      cores={
-        corpo:0x47127b,
-        detalhe:0xd76cff,
-        pele:0x725040
-      };
-
-    break;
-
-
-    case"darkninja":
-
-      cores={
-        corpo:0x050505,
-        detalhe:0xa800ff,
-        pele:0x111111
-      };
-
-    break;
-
-
-    case"titan":
-
-      cores={
-        corpo:0x4c5668,
-        detalhe:0xb9c7ff,
-        pele:0x77818f
-      };
-
-    break;
-
-
-    case"cosmic":
-
-      cores={
-        corpo:0x202e9d,
-        detalhe:0x77f7ff,
-        pele:0x5fcfff
-      };
-
-    break;
-
-
-    case"dragon":
-
-      cores={
-        corpo:0x7e160d,
-        detalhe:0xff5425,
-        pele:0xb72a18
-      };
-
-    break;
-
-
-    default:
-
-      cores={
-        corpo:0x333333,
-        detalhe:0xffffff,
-        pele:0xb87959
-      };
-  }
-
-
-  /* =========================
-     CORPO
-  ========================= */
-
-  const corpo =
-    new THREE.Mesh(
-      new THREE.CapsuleGeometry(
-        .55,
-        1.25,
-        8,
-        16
-      ),
-      material(
-        cores.corpo,
-        tipo==="iron"||
-        tipo==="robot"||
-        tipo==="titan"
-      )
-    );
-
-  corpo.position.y=1.65;
-
-  corpo.scale.z=.65;
-
-  corpo.castShadow=true;
-
-  grupo.add(corpo);
-
-
-  /* =========================
-     CABEÇA
-  ========================= */
-
-  const cabeca =
-    new THREE.Mesh(
-      new THREE.SphereGeometry(
-        .43,
-        24,
-        24
-      ),
-      material(
-        cores.pele,
-        tipo==="robot"||
-        tipo==="titan"
-      )
-    );
-
-  cabeca.position.y=2.75;
-
-  cabeca.castShadow=true;
-
-  grupo.add(cabeca);
-
-
-  /* =========================
-     BRAÇOS
-  ========================= */
-
-  const bracoGeo =
-    new THREE.CapsuleGeometry(
-      .16,
-      .85,
-      6,
-      12
-    );
-
-
-  const bracoL =
-    new THREE.Mesh(
-      bracoGeo,
-      material(cores.corpo)
-    );
-
-  bracoL.position.set(
-    -.72,
-    1.7,
-    0
-  );
-
-  bracoL.rotation.z=-.18;
-
-  grupo.add(bracoL);
-
-
-  const bracoR =
-    new THREE.Mesh(
-      bracoGeo,
-      material(cores.corpo)
-    );
-
-  bracoR.position.set(
-    .72,
-    1.7,
-    0
-  );
-
-  bracoR.rotation.z=.18;
-
-  grupo.add(bracoR);
-
-
-  /* =========================
-     PERNAS
-  ========================= */
-
-  const pernaGeo =
-    new THREE.CapsuleGeometry(
-      .19,
-      1.05,
-      6,
-      12
-    );
-
-
-  const pernaL =
-    new THREE.Mesh(
-      pernaGeo,
-      material(cores.corpo)
-    );
-
-  pernaL.position.set(
-    -.3,
-    .55,
-    0
-  );
-
-  grupo.add(pernaL);
-
-
-  const pernaR =
-    new THREE.Mesh(
-      pernaGeo,
-      material(cores.corpo)
-    );
-
-  pernaR.position.set(
-    .3,
-    .55,
-    0
-  );
-
-  grupo.add(pernaR);
-
-
-  /* =========================
-     DETALHE NO PEITO
-  ========================= */
-
-  const detalhe =
-    new THREE.Mesh(
-      new THREE.BoxGeometry(
-        .38,
-        .38,
-        .08
-      ),
-      material(
-        cores.detalhe,
-        1
-      )
-    );
-
-  detalhe.position.set(
-    0,
-    1.75,
-    -.39
-  );
-
-  grupo.add(detalhe);
-
-
-  /* =========================
-     OLHOS
-  ========================= */
-
-  if(tipo!=="hulk" &&
-     tipo!=="alien"){
-
-    const olhoMat =
-      material(0xffffff,1);
-
-    const olhoGeo =
-      new THREE.SphereGeometry(
-        .075,
-        12,
-        12
+      model.scale.set(
+        2.2,
+        2.2,
+        2.2
       );
 
 
-    const olhoL =
-      new THREE.Mesh(
-        olhoGeo,
-        olhoMat
+      model.position.set(
+        0,
+        -2.25,
+        0
       );
 
-    olhoL.position.set(
-      -.16,
-      2.83,
-      -.39
-    );
 
-    grupo.add(olhoL);
+      model.rotation.y=
+        Math.PI;
 
 
-    const olhoR =
-      new THREE.Mesh(
-        olhoGeo,
-        olhoMat
+      model.traverse(
+        function(obj){
+
+          if(obj.isMesh){
+
+            obj.castShadow=true;
+            obj.receiveShadow=true;
+
+          }
+
+        }
       );
 
-    olhoR.position.set(
-      .16,
-      2.83,
-      -.39
-    );
 
-    grupo.add(olhoR);
-  }
+      scene.add(model);
 
 
-  /* =========================
-     CAPA
-  ========================= */
+      if(gltf.animations &&
+         gltf.animations.length){
 
-  if(tipo==="batman"||
-     tipo==="superman"){
+        mixer=
+          new THREE.AnimationMixer(
+            model
+          );
 
-    const capa =
-      new THREE.Mesh(
-        new THREE.PlaneGeometry(
-          1.7,
-          2.2
-        ),
-        new THREE.MeshStandardMaterial({
-          color:
-            tipo==="batman"
-            ?0x050505
-            :0x9b0718,
+        mixer.clipAction(
+          gltf.animations[0]
+        ).play();
 
-          side:
-            THREE.DoubleSide,
+      }
 
-          roughness:.7
-        })
-      );
+    },
 
-    capa.position.set(
-      0,
-      1.55,
-      .35
-    );
+    undefined,
 
-    capa.rotation.x=.12;
+    function(error){
 
-    grupo.add(capa);
-  }
+      console.error(error);
 
+      document.getElementById(
+        "status"
+      ).textContent=
+        "❌ Não foi possível carregar o modelo 3D";
 
-  /* =========================
-     ANEL DE ENERGIA
-  ========================= */
-
-  const ring =
-    new THREE.Mesh(
-
-      new THREE.TorusGeometry(
-        .8,
-        .025,
-        8,
-        64
-      ),
-
-      new THREE.MeshBasicMaterial({
-        color:cores.detalhe
-      })
-    );
-
-  ring.position.y=.03;
-
-  ring.rotation.x=
-    Math.PI/2;
-
-  grupo.add(ring);
-
-
-  return grupo;
-}
-
-
-/* =====================================================
-   TROCAR PERSONAGEM
-===================================================== */
-
-function mostrarPersonagem(tipo){
-
-  if(personagemAtual){
-
-    scene.remove(
-      personagemAtual
-    );
-  }
-
-  personagemAtual =
-    criarPersonagem(tipo);
-
-  scene.add(
-    personagemAtual
-  );
-}
-
-
-/* =====================================================
-   ANIMAÇÃO 3D
-===================================================== */
-
-function animar(){
-
-  requestAnimationFrame(
-    animar
-  );
-
-  const tempo =
-    clock.getElapsedTime();
-
-
-  if(personagemAtual){
-
-    /* movimento natural */
-
-    personagemAtual.rotation.y =
-      Math.sin(tempo*.9)*.12;
-
-
-    if(
-      personagemAtual.userData.dancando
-    ){
-
-      personagemAtual.position.y =
-        -2.25 +
-        Math.abs(
-          Math.sin(tempo*5)
-        )*.16;
-
-      personagemAtual.rotation.z =
-        Math.sin(tempo*5)*.07;
     }
 
-
-    /* entrada */
-
-    if(
-      personagemAtual.userData.entrando
-    ){
-
-      personagemAtual.rotation.y =
-        tempo*3;
-    }
-  }
-
-
-  renderer.render(
-    scene,
-    camera
-  );
-}
-
-
-/* =====================================================
-   INICIAR SHOW
-===================================================== */
-
-function iniciar(personagem){
-
-  if(ocupado){
-
-    document.getElementById(
-      "status"
-    ).textContent=
-      "⏳ O palco está ocupado";
-
-    return;
-  }
-
-  ocupado=true;
-
-
-  const status =
-    document.getElementById(
-      "status"
-    );
-
-  const name =
-    document.getElementById(
-      "name"
-    );
-
-
-  mostrarPersonagem(
-    personagem.tipo
   );
 
-
-  personagemAtual
-    .userData
-    .entrando=true;
+}
 
 
-  personagemAtual
-    .userData
-    .dancando=false;
+/* ==========================================
+   CORES
+========================================== */
+
+function aplicarVisual(cor){
+
+  if(!model)return;
 
 
-  name.textContent =
-    personagem.nome;
+  model.traverse(
+    function(obj){
 
-  name.style.display =
-    "block";
-
-
-  container.className=
-    "enter";
+      if(!obj.isMesh)return;
 
 
-  status.textContent=
-    "🚪 "+personagem.nome+
-    " entrando no palco...";
+      if(!obj.material)return;
 
 
-  /* entrada */
+      /* deixa o modelo com
+         aparência de palco */
 
-  setTimeout(()=>{
-
-    if(!personagemAtual)
-      return;
-
-    personagemAtual
-      .userData
-      .entrando=false;
-
-    personagemAtual
-      .userData
-      .dancando=true;
-
-    container.className=
-      "dance";
-
-    status.textContent=
-      "🔥 "+personagem.nome+
-      " está dançando!";
-
-  },1400);
+      obj.material.roughness=.35;
 
 
-  /* dança */
+      /*
+        Não pintamos tudo do modelo,
+        porque isso destruiria
+        as texturas.
+      */
 
-  setTimeout(()=>{
-
-    if(!personagemAtual)
-      return;
-
-    personagemAtual
-      .userData
-      .dancando=false;
-
-    container.className=
-      "exit";
-
-    status.textContent=
-      "🚪 "+personagem.nome+
-      " está saindo...";
-
-  },6500);
-
-
-  /* fim */
-
-  setTimeout(()=>{
-
-    container.className="";
-
-    container.style.opacity="0";
-
-    name.style.display="none";
-
-    status.textContent=
-      "🟢 LIVE Stage • Pronto";
-
-    if(personagemAtual){
-
-      scene.remove(
-        personagemAtual
-      );
-
-      personagemAtual=null;
     }
+  );
 
-    ocupado=false;
-
-  },7800);
 }
 
 
-/* =====================================================
-   BUSCAR
-===================================================== */
+/* ==========================================
+   SHOW
+========================================== */
 
-function normalizar(texto){
+function show(nome){
 
-  return texto
-    .toLowerCase()
-    .trim()
-    .normalize("NFD")
-    .replace(
-      /[\u0300-\u036f]/g,
-      ""
-    );
-}
+  const chave=
+    normalizar(nome);
 
-
-function iniciarPorNome(valor){
-
-  const chave =
-    normalizar(valor);
-
-  const personagem =
+  const personagem=
     personagens[chave];
 
 
@@ -1652,79 +901,365 @@ function iniciarPorNome(valor){
   }
 
 
-  iniciar(personagem);
-}
-
-
-function testar(){
-
-  const campo =
-    document.getElementById(
-      "cmd"
-    );
-
-  iniciarPorNome(
-    campo.value
-  );
-
-  campo.value="";
-}
-
-
-/* =====================================================
-   TIKTOK — PRESENTES
-===================================================== */
-
-function receberPresenteTikTok(
-  nomePresente
-){
-
-  const chave =
-    normalizar(
-      nomePresente
-    );
-
-  const personagemNome =
-    presentes[chave];
-
-
-  if(!personagemNome){
+  if(ocupado){
 
     document.getElementById(
       "status"
     ).textContent=
-      "🎁 Presente recebido: "+
-      nomePresente;
+      "⏳ Aguarde o personagem terminar";
 
     return;
   }
 
 
-  iniciarPorNome(
-    personagemNome
+  ocupado=true;
+
+
+  const container=
+    document.getElementById(
+      "character"
+    );
+
+
+  const status=
+    document.getElementById(
+      "status"
+    );
+
+
+  const name=
+    document.getElementById(
+      "name"
+    );
+
+
+  if(!model){
+
+    status.textContent=
+      "⏳ Carregando modelo 3D...";
+
+    ocupado=false;
+
+    return;
+  }
+
+
+  model.visible=true;
+
+  model.position.set(
+    -3.5,
+    -2.25,
+    0
+  );
+
+
+  name.textContent=
+    personagem.nome;
+
+  name.style.display=
+    "block";
+
+
+  container.className=
+    "enter";
+
+
+  status.textContent=
+    "🚪 "+personagem.nome+
+    " entrando...";
+
+
+  /* entrada */
+
+  const inicio=
+    performance.now();
+
+
+  function entrada(now){
+
+    const p=
+      Math.min(
+        (now-inicio)/1200,
+        1
+      );
+
+
+    const suave=
+      1-Math.pow(
+        1-p,
+        4
+      );
+
+
+    model.position.x=
+      -3.5+
+      3.5*suave;
+
+
+    model.rotation.y=
+      Math.PI+
+      (1-suave)*1.4;
+
+
+    if(p<1){
+
+      requestAnimationFrame(
+        entrada
+      );
+
+    }else{
+
+      dançar();
+
+    }
+
+  }
+
+
+  requestAnimationFrame(
+    entrada
   );
 }
 
 
-/* =====================================================
-   TESTE DE PRESENTES
-===================================================== */
+/* ==========================================
+   DANÇA
+========================================== */
 
-/*
+function dançar(){
 
-Exemplos:
+  const status=
+    document.getElementById(
+      "status"
+    );
 
-receberPresenteTikTok("rosa");
 
-receberPresenteTikTok("leao");
+  const container=
+    document.getElementById(
+      "character"
+    );
 
-receberPresenteTikTok("coroa");
 
-receberPresenteTikTok("foguete");
+  status.textContent=
+    "🔥 "+document.getElementById(
+      "name"
+    ).textContent+
+    " está dançando!";
 
-receberPresenteTikTok("coracao");
 
-*/
+  container.className=
+    "dance";
+
+
+  model.userData.dancando=
+    true;
+
+
+  setTimeout(
+    sair,
+    5200
+  );
+}
+
+
+/* ==========================================
+   SAÍDA
+========================================== */
+
+function sair(){
+
+  const container=
+    document.getElementById(
+      "character"
+    );
+
+
+  const status=
+    document.getElementById(
+      "status"
+    );
+
+
+  status.textContent=
+    "🚪 Saindo do palco...";
+
+
+  container.className=
+    "exit";
+
+
+  const inicio=
+    performance.now();
+
+
+  const xInicial=
+    model.position.x;
+
+
+  function animarSaida(now){
+
+    const p=
+      Math.min(
+        (now-inicio)/1100,
+        1
+      );
+
+
+    model.position.x=
+      xInicial+
+      4.5*p;
+
+
+    model.rotation.y=
+      Math.PI-
+      p*1.3;
+
+
+    model.scale.setScalar(
+      2.2-
+      .55*p
+    );
+
+
+    if(p<1){
+
+      requestAnimationFrame(
+        animarSaida
+      );
+
+    }else{
+
+      finalizar();
+
+    }
+
+  }
+
+
+  requestAnimationFrame(
+    animarSaida
+  );
+}
+
+
+/* ==========================================
+   FINAL
+========================================== */
+
+function finalizar(){
+
+  const container=
+    document.getElementById(
+      "character"
+    );
+
+
+  const status=
+    document.getElementById(
+      "status"
+    );
+
+
+  const name=
+    document.getElementById(
+      "name"
+    );
+
+
+  container.className="";
+
+  container.style.opacity="0";
+
+
+  name.style.display="none";
+
+
+  status.textContent=
+    "🟢 LIVE STAGE 3D • PRONTO";
+
+
+  model.visible=false;
+
+  model.scale.set(
+    2.2,
+    2.2,
+    2.2
+  );
+
+
+  ocupado=false;
+}
+
+
+/* ==========================================
+   PRESENTE
+========================================== */
+
+function receberPresenteTikTok(
+  presente
+){
+
+  const chave=
+    normalizar(presente);
+
+
+  const personagem=
+    presentes[chave];
+
+
+  if(!personagem){
+
+    document.getElementById(
+      "status"
+    ).textContent=
+      "🎁 Presente recebido: "+
+      presente;
+
+    return;
+  }
+
+
+  show(personagem);
+}
+
+
+/* ==========================================
+   NORMALIZAR
+========================================== */
+
+function normalizar(texto){
+
+  return String(texto)
+    .toLowerCase()
+    .trim()
+    .normalize("NFD")
+    .replace(
+      /[\u0300-\u036f]/g,
+      ""
+    );
+}
+
+
+/* ==========================================
+   INPUT
+========================================== */
+
+function testar(){
+
+  const campo=
+    document.getElementById(
+      "cmd"
+    );
+
+
+  show(
+    campo.value
+  );
+
+
+  campo.value="";
+}
+
 
 document
   .getElementById("cmd")
@@ -1740,20 +1275,88 @@ document
   );
 
 
-/* =====================================================
-   REDIMENSIONAR
-===================================================== */
+/* ==========================================
+   ANIMAÇÃO
+========================================== */
 
-function redimensionar(){
+function animate(){
 
-  const stage =
+  requestAnimationFrame(
+    animate
+  );
+
+
+  const delta=
+    clock.getDelta();
+
+
+  const tempo=
+    clock.elapsedTime;
+
+
+  if(mixer){
+
+    mixer.update(delta);
+
+  }
+
+
+  if(model &&
+     model.visible){
+
+    /* dança procedural */
+
+    if(model.userData.dancando){
+
+      model.position.y=
+        -2.25+
+        Math.abs(
+          Math.sin(
+            tempo*5
+          )
+        )*.13;
+
+
+      model.rotation.z=
+        Math.sin(
+          tempo*5
+        )*.055;
+
+
+      model.rotation.y=
+        Math.PI+
+        Math.sin(
+          tempo*2
+        )*.12;
+
+    }
+
+  }
+
+
+  renderer.render(
+    scene,
+    camera
+  );
+}
+
+
+/* ==========================================
+   RESIZE
+========================================== */
+
+function resize(){
+
+  const stage=
     document.getElementById(
       "stage"
     );
 
-  camera.aspect =
-    window.innerWidth /
+
+  camera.aspect=
+    window.innerWidth/
     stage.clientHeight;
+
 
   camera.updateProjectionMatrix();
 
@@ -1765,11 +1368,11 @@ function redimensionar(){
 }
 
 
-/* =====================================================
-   COMEÇAR
-===================================================== */
+/* ==========================================
+   START
+========================================== */
 
-iniciar3D();
+init();
 
 </script>
 
