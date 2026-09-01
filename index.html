@@ -2,344 +2,464 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-<title>LIVE STAGE 3D</title>
+<meta name="viewport"
+content="width=device-width,initial-scale=1,maximum-scale=1">
+
+<title>LIVE Stage V8 — 2D</title>
 
 <style>
-*{box-sizing:border-box}
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+}
 
 html,body{
   margin:0;
   width:100%;
-  height:100%;
-  overflow-x:hidden;
-  background:#000;
+  min-height:100%;
+  background:#020205;
   color:#fff;
   font-family:Arial,Helvetica,sans-serif;
+  overflow-x:hidden;
 }
 
 body{
   background:
-    radial-gradient(circle at 50% 0%,#171722,#000 55%);
+    radial-gradient(circle at 50% 10%,#17172a 0,#030307 45%,#000 100%);
 }
+
+/* =========================
+   PALCO
+========================= */
 
 #stage{
   position:relative;
   width:100%;
-  height:70vh;
-  min-height:480px;
+  height:72vh;
+  min-height:500px;
   overflow:hidden;
 
   background:
+    radial-gradient(
+      ellipse at 50% 45%,
+      rgba(100,50,255,.25),
+      transparent 45%
+    ),
     linear-gradient(
-      rgba(0,0,0,.05),
-      rgba(0,0,0,.55)
+      rgba(0,0,0,.15),
+      rgba(0,0,0,.72)
     ),
     url("fundo.jpg") center/cover no-repeat;
 }
 
-/* brilho cinematográfico */
+/* brilho do palco */
 
-#stage:after{
-  content:"";
+.stageGlow{
   position:absolute;
-  inset:0;
-  pointer-events:none;
-
-  background:
-    radial-gradient(
-      ellipse at 50% 80%,
-      rgba(255,0,60,.18),
-      transparent 42%
-    ),
-    radial-gradient(
-      ellipse at 50% 20%,
-      rgba(0,110,255,.15),
-      transparent 40%
-    );
-
-  z-index:3;
+  left:50%;
+  bottom:-30%;
+  width:75%;
+  height:70%;
+  transform:translateX(-50%);
+  background:radial-gradient(
+    ellipse,
+    rgba(255,30,80,.35),
+    rgba(100,30,255,.12),
+    transparent 70%
+  );
+  filter:blur(25px);
 }
 
-/* luzes */
+/* =========================
+   LUZES
+========================= */
 
 .light{
   position:absolute;
+  top:-30%;
   width:18%;
-  height:160%;
-  top:-35%;
-  opacity:.17;
-  filter:blur(25px);
-  transform-origin:top center;
-  z-index:2;
+  height:150%;
+  filter:blur(18px);
+  opacity:.22;
   pointer-events:none;
+  transform-origin:top;
+  animation:swingLight 5s ease-in-out infinite alternate;
 }
 
 .light.blue{
-  left:8%;
+  left:5%;
   background:linear-gradient(
-    to bottom,
-    #008cff,
-    transparent
+    rgba(0,140,255,.8),
+    transparent 75%
   );
   transform:rotate(18deg);
-  animation:beamBlue 4s infinite alternate ease-in-out;
 }
 
 .light.red{
-  right:8%;
+  right:5%;
   background:linear-gradient(
-    to bottom,
-    #ff003c,
-    transparent
+    rgba(255,20,50,.75),
+    transparent 75%
   );
   transform:rotate(-18deg);
-  animation:beamRed 4.5s infinite alternate ease-in-out;
+  animation-delay:-2s;
 }
 
-@keyframes beamBlue{
-  from{transform:rotate(10deg)}
-  to{transform:rotate(27deg)}
+.light.white{
+  left:41%;
+  width:18%;
+  background:linear-gradient(
+    rgba(255,255,255,.55),
+    transparent 70%
+  );
+  animation-duration:6s;
 }
 
-@keyframes beamRed{
-  from{transform:rotate(-10deg)}
-  to{transform:rotate(-27deg)}
+@keyframes swingLight{
+  from{
+    transform:rotate(-12deg);
+  }
+  to{
+    transform:rotate(12deg);
+  }
 }
 
-/* status */
+/* =========================
+   STATUS
+========================= */
 
 #status{
   position:absolute;
-  top:15px;
+  top:18px;
   left:50%;
   transform:translateX(-50%);
+  z-index:100;
 
-  z-index:50;
+  padding:10px 18px;
 
-  padding:9px 16px;
+  border:1px solid rgba(255,255,255,.18);
   border-radius:30px;
 
-  background:rgba(0,0,0,.72);
-  border:1px solid rgba(255,255,255,.15);
+  background:rgba(5,5,10,.78);
+  backdrop-filter:blur(12px);
 
-  backdrop-filter:blur(15px);
-
-  font-size:12px;
+  font-size:13px;
   font-weight:bold;
-
   white-space:nowrap;
+
+  box-shadow:
+    0 8px 30px rgba(0,0,0,.4);
 }
 
-/* nome */
+/* =========================
+   NOME
+========================= */
 
 #name{
   position:absolute;
-  bottom:9%;
   left:50%;
+  bottom:17%;
   transform:translateX(-50%);
+  z-index:80;
 
-  z-index:50;
-
-  padding:9px 18px;
+  padding:8px 20px;
 
   border-radius:14px;
 
   background:rgba(0,0,0,.78);
-  border:1px solid rgba(255,255,255,.2);
+  border:1px solid rgba(255,255,255,.18);
 
-  backdrop-filter:blur(12px);
+  font-size:15px;
+  font-weight:800;
 
-  font-size:14px;
-  font-weight:900;
+  box-shadow:
+    0 0 25px rgba(255,30,80,.25);
 
   display:none;
 }
 
-/* 3D */
+/* =========================
+   ÁREA DO PERSONAGEM
+========================= */
 
 #character{
   position:absolute;
-  inset:0;
-  z-index:20;
 
-  opacity:0;
+  left:50%;
+  bottom:8%;
 
-  pointer-events:none;
+  width:230px;
+  height:390px;
+
+  z-index:50;
+
+  display:none;
+
+  transform-origin:center bottom;
+
+  filter:
+    drop-shadow(0 18px 20px rgba(0,0,0,.65))
+    drop-shadow(0 0 18px rgba(255,30,80,.25));
 }
 
-#character canvas{
-  display:block;
-  width:100%!important;
-  height:100%!important;
+/* SVG */
+
+#character svg{
+  width:100%;
+  height:100%;
+  overflow:visible;
 }
 
-/* entrada */
+/* =========================
+   ENTRADA CINEMATOGRÁFICA
+========================= */
 
 .enter{
-  animation:enter 1.2s cubic-bezier(.15,.9,.2,1) forwards;
+  display:block!important;
+
+  animation:
+    entrance 1.35s
+    cubic-bezier(.12,.85,.15,1)
+    forwards;
 }
 
-@keyframes enter{
+@keyframes entrance{
 
   0%{
     opacity:0;
     transform:
-      translateX(-42vw)
-      scale(.65)
-      rotate(-12deg);
+      translate(-160%,70px)
+      scale(.35)
+      rotate(-15deg);
   }
 
-  60%{
+  45%{
     opacity:1;
     transform:
-      translateX(25px)
-      scale(1.06)
-      rotate(4deg);
+      translate(-70%,0)
+      scale(1.08)
+      rotate(6deg);
+  }
+
+  72%{
+    transform:
+      translate(-43%,0)
+      scale(.97)
+      rotate(-2deg);
   }
 
   100%{
     opacity:1;
     transform:
-      translateX(0)
+      translate(-50%,0)
       scale(1)
       rotate(0);
   }
 }
 
-/* dança */
+/* =========================
+   DANÇA
+========================= */
 
 .dance{
-  opacity:1;
-  animation:dance .55s infinite alternate ease-in-out;
+  display:block!important;
+
+  animation:
+    danceBody .52s
+    ease-in-out
+    infinite alternate;
 }
 
-@keyframes dance{
+@keyframes danceBody{
 
   0%{
     transform:
-      translateY(0)
-      rotate(-3deg)
+      translate(-50%,0)
+      rotate(-4deg)
       scale(1);
+  }
+
+  25%{
+    transform:
+      translate(-50%,-13px)
+      rotate(5deg)
+      scale(1.025);
   }
 
   50%{
     transform:
-      translateY(-15px)
-      rotate(3deg)
+      translate(-50%,0)
+      rotate(-5deg)
+      scale(.98);
+  }
+
+  75%{
+    transform:
+      translate(-50%,-18px)
+      rotate(4deg)
       scale(1.035);
   }
 
   100%{
     transform:
-      translateY(0)
-      rotate(-4deg)
+      translate(-50%,0)
+      rotate(-3deg)
       scale(1);
   }
 }
 
-/* saída */
+/* =========================
+   SAÍDA
+========================= */
 
 .exit{
-  opacity:1;
-  animation:exit 1.15s cubic-bezier(.7,0,.9,.2) forwards;
+  display:block!important;
+
+  animation:
+    exitStage 1.3s
+    cubic-bezier(.7,0,.95,.25)
+    forwards;
 }
 
-@keyframes exit{
+@keyframes exitStage{
 
   0%{
     opacity:1;
     transform:
-      translateX(0)
-      scale(1);
+      translate(-50%,0)
+      scale(1)
+      rotate(0);
+  }
+
+  35%{
+    transform:
+      translate(-45%,-20px)
+      scale(1.05)
+      rotate(-4deg);
   }
 
   100%{
     opacity:0;
     transform:
-      translateX(48vw)
-      scale(.65)
+      translate(150%,50px)
+      scale(.5)
       rotate(12deg);
   }
 }
 
-/* controles */
+/* =========================
+   CONTROLES
+========================= */
 
 #controls{
   display:flex;
-  gap:8px;
-  padding:12px;
+  gap:9px;
 
-  background:#050505;
-  border-bottom:1px solid #191919;
+  padding:15px;
+
+  background:
+    linear-gradient(#09090e,#030305);
+
+  border-top:1px solid #191922;
 }
 
 #cmd{
   flex:1;
   min-width:0;
 
-  padding:14px;
+  padding:15px;
+
+  color:#fff;
+
+  background:#101016;
+
+  border:
+    1px solid #292936;
 
   border-radius:13px;
 
-  background:#111;
-  color:white;
-
-  border:1px solid #303030;
   outline:none;
+
+  font-size:14px;
 }
 
 #cmd:focus{
-  border-color:#743cff;
+  border-color:#8b4dff;
+
+  box-shadow:
+    0 0 0 3px rgba(120,50,255,.12);
 }
 
-#test{
-  padding:0 18px;
-
+button{
   border:0;
+  color:#fff;
+
+  font-weight:800;
+
   border-radius:13px;
 
-  color:white;
-  font-weight:900;
+  cursor:pointer;
+}
+
+#controls button{
+  padding:0 20px;
 
   background:
     linear-gradient(
-      100deg,
-      #7027ff,
-      #f00045
+      135deg,
+      #6b25ff,
+      #e91e63
     );
+
+  box-shadow:
+    0 7px 20px rgba(100,30,255,.25);
 }
 
-/* botões */
+/* =========================
+   BOTÕES
+========================= */
 
 #tests{
   display:flex;
   flex-wrap:wrap;
-  gap:7px;
+  gap:8px;
 
-  padding:12px;
+  padding:14px;
 
-  background:#050505;
+  background:#050507;
 }
 
 .test{
-  border:1px solid #292929;
-  border-radius:10px;
+  padding:10px 13px;
 
-  background:#121212;
-  color:white;
+  background:#111117;
 
-  padding:9px 11px;
+  border:1px solid #252531;
 
   font-size:12px;
-  font-weight:bold;
+
+  transition:.2s;
 }
 
-/* caixas */
+.test:active{
+  transform:scale(.94);
+}
+
+.test:hover{
+  border-color:#7a43ff;
+  background:#181321;
+}
+
+/* =========================
+   QUADRADOS
+========================= */
 
 #boxes{
   display:grid;
-  grid-template-columns:repeat(3,1fr);
+
+  grid-template-columns:
+    repeat(3,1fr);
+
   gap:10px;
 
   padding:12px;
@@ -348,31 +468,45 @@ body{
 }
 
 .box{
-  height:90px;
+  height:105px;
 
   background:#000;
 
-  border:1px solid #1c1c1c;
+  border:
+    1px solid #17171d;
+
   border-radius:13px;
 }
+
+/* =========================
+   RESPONSIVO
+========================= */
 
 @media(max-width:600px){
 
   #stage{
-    height:67vh;
-    min-height:430px;
+    height:68vh;
+    min-height:460px;
+  }
+
+  #character{
+    width:205px;
+    height:350px;
+  }
+
+  #name{
+    bottom:16%;
   }
 
   #status{
-    font-size:11px;
+    font-size:12px;
+    max-width:90%;
+    overflow:hidden;
+    text-overflow:ellipsis;
   }
 
   .test{
     font-size:11px;
-  }
-
-  .box{
-    height:78px;
   }
 }
 </style>
@@ -384,83 +518,323 @@ body{
 
   <div class="light blue"></div>
   <div class="light red"></div>
+  <div class="light white"></div>
+
+  <div class="stageGlow"></div>
 
   <div id="status">
-    🟢 LIVE STAGE 3D • PRONTO
+    🟢 LIVE Stage pronto
   </div>
 
   <div id="name"></div>
 
-  <div id="character"></div>
+  <!-- PERSONAGEM 2D -->
+  <div id="character">
 
+    <svg viewBox="0 0 230 390">
+
+      <defs>
+
+        <linearGradient id="suitRed"
+          x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#ff334f"/>
+          <stop offset=".45" stop-color="#a90020"/>
+          <stop offset="1" stop-color="#210008"/>
+        </linearGradient>
+
+        <linearGradient id="suitBlue"
+          x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#2878ff"/>
+          <stop offset="1" stop-color="#07163c"/>
+        </linearGradient>
+
+        <linearGradient id="metal"
+          x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#f42b32"/>
+          <stop offset=".5" stop-color="#9c1015"/>
+          <stop offset="1" stop-color="#350000"/>
+        </linearGradient>
+
+        <linearGradient id="green"
+          x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#79e33e"/>
+          <stop offset=".5" stop-color="#27852d"/>
+          <stop offset="1" stop-color="#0b3518"/>
+        </linearGradient>
+
+        <filter id="glow">
+          <feGaussianBlur stdDeviation="4"/>
+        </filter>
+
+      </defs>
+
+      <!-- sombra -->
+      <ellipse
+        cx="115"
+        cy="370"
+        rx="72"
+        ry="12"
+        fill="rgba(0,0,0,.7)"
+      />
+
+      <!-- CABEÇA -->
+      <g id="head">
+
+        <ellipse
+          cx="115"
+          cy="70"
+          rx="42"
+          ry="49"
+          fill="url(#suitRed)"
+          stroke="#ff4058"
+          stroke-width="3"
+        />
+
+        <!-- olhos -->
+        <path
+          d="M82 66 Q99 50 108 68 Q96 82 82 79Z"
+          fill="white"
+          stroke="#111"
+          stroke-width="3"
+        />
+
+        <path
+          d="M122 68 Q133 50 149 66 L149 79 Q135 82 122 68Z"
+          fill="white"
+          stroke="#111"
+          stroke-width="3"
+        />
+
+        <!-- detalhes máscara -->
+        <path
+          d="M115 25 L115 115"
+          stroke="#ff304b"
+          stroke-width="2"
+          opacity=".7"
+        />
+
+      </g>
+
+      <!-- PESCOÇO -->
+      <rect
+        x="101"
+        y="106"
+        width="28"
+        height="25"
+        rx="8"
+        fill="#7c101a"
+      />
+
+      <!-- CORPO -->
+      <path
+        d="M72 120
+           Q115 105 158 120
+           L168 225
+           Q115 245 62 225
+           Z"
+        fill="url(#suitRed)"
+        stroke="#ff344f"
+        stroke-width="3"
+      />
+
+      <!-- símbolo -->
+      <path
+        d="M115 137
+           L108 158
+           L94 162
+           L106 170
+           L101 190
+           L115 180
+           L129 190
+           L124 170
+           L136 162
+           L122 158Z"
+        fill="#fff"
+        opacity=".95"
+      />
+
+      <!-- BRAÇO ESQUERDO -->
+      <g>
+        <path
+          d="M70 128
+             Q52 145 42 188
+             Q39 201 50 207
+             Q60 211 66 198
+             L90 151Z"
+          fill="url(#suitRed)"
+          stroke="#ff344f"
+          stroke-width="3"
+        />
+
+        <circle
+          cx="49"
+          cy="197"
+          r="12"
+          fill="#160006"
+          stroke="#e52a43"
+          stroke-width="3"
+        />
+      </g>
+
+      <!-- BRAÇO DIREITO -->
+      <g>
+        <path
+          d="M160 128
+             Q180 145 187 188
+             Q190 202 178 207
+             Q168 211 163 198
+             L140 151Z"
+          fill="url(#suitRed)"
+          stroke="#ff344f"
+          stroke-width="3"
+        />
+
+        <circle
+          cx="179"
+          cy="197"
+          r="12"
+          fill="#160006"
+          stroke="#e52a43"
+          stroke-width="3"
+        />
+      </g>
+
+      <!-- PERNA ESQUERDA -->
+      <path
+        d="M67 215
+           Q90 220 112 221
+           L106 330
+           Q91 347 72 332
+           L63 250Z"
+        fill="url(#suitBlue)"
+        stroke="#345cff"
+        stroke-width="3"
+      />
+
+      <!-- PERNA DIREITA -->
+      <path
+        d="M118 221
+           Q142 220 164 215
+           L168 250
+           L157 332
+           Q138 347 123 330Z"
+        fill="url(#suitBlue)"
+        stroke="#345cff"
+        stroke-width="3"
+      />
+
+      <!-- botas -->
+      <path
+        d="M70 320 Q91 332 107 325 L109 349 Q83 364 62 347Z"
+        fill="#08080d"
+        stroke="#ff304b"
+        stroke-width="3"
+      />
+
+      <path
+        d="M123 325 Q143 332 160 320 L170 347 Q146 364 120 349Z"
+        fill="#08080d"
+        stroke="#ff304b"
+        stroke-width="3"
+      />
+
+      <!-- linhas do uniforme -->
+      <path
+        d="M73 137 L91 220
+           M157 137 L139 220"
+        stroke="#ff6175"
+        stroke-width="2"
+        opacity=".55"
+      />
+
+    </svg>
+
+  </div>
 </div>
+
+<!-- CONTROLES -->
 
 <div id="controls">
 
   <input
     id="cmd"
-    placeholder="Digite: hulk, batman, aranha..."
+    placeholder="Digite um personagem..."
+    autocomplete="off"
   >
 
-  <button id="test" onclick="testar()">
+  <button onclick="testar()">
     TESTAR
   </button>
 
 </div>
 
+<!-- PERSONAGENS -->
+
 <div id="tests">
 
   <button class="test"
-    onclick="show('homem aranha')">
+    onclick="iniciarPorNome('homem aranha')">
     🕷️ Aranha
   </button>
 
   <button class="test"
-    onclick="show('hulk')">
+    onclick="iniciarPorNome('hulk')">
     💚 Hulk
   </button>
 
   <button class="test"
-    onclick="show('batman')">
+    onclick="iniciarPorNome('batman')">
     🦇 Batman
   </button>
 
   <button class="test"
-    onclick="show('homem de ferro')">
+    onclick="iniciarPorNome('homem de ferro')">
     🤖 Homem de Ferro
   </button>
 
   <button class="test"
-    onclick="show('superman')">
+    onclick="iniciarPorNome('superman')">
     🦸 Superman
   </button>
 
   <button class="test"
-    onclick="show('flash')">
+    onclick="iniciarPorNome('flash')">
     ⚡ Flash
   </button>
 
   <button class="test"
-    onclick="show('ninja')">
+    onclick="iniciarPorNome('ninja')">
     🥷 Ninja
   </button>
 
   <button class="test"
-    onclick="show('alien')">
-    👽 Alien
-  </button>
-
-  <button class="test"
-    onclick="show('mago')">
+    onclick="iniciarPorNome('mago')">
     🧙 Mago
   </button>
 
   <button class="test"
-    onclick="show('cosmico')">
-    🌌 Cósmico
+    onclick="iniciarPorNome('robo')">
+    🤖 Robô
+  </button>
+
+  <button class="test"
+    onclick="iniciarPorNome('alien')">
+    👽 Alien
+  </button>
+
+  <button class="test"
+    onclick="iniciarPorNome('dragao')">
+    🐲 Dragão
+  </button>
+
+  <button class="test"
+    onclick="iniciarPorNome('samurai')">
+    ⚔️ Samurai
   </button>
 
 </div>
+
+<!-- 3 QUADRADOS PRETOS -->
 
 <div id="boxes">
   <div class="box"></div>
@@ -468,911 +842,430 @@ body{
   <div class="box"></div>
 </div>
 
-
-<!-- THREE.JS -->
-
-<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
-
-<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/loaders/GLTFLoader.js"></script>
-
-
 <script>
 
-/* ==========================================
-   CONFIGURAÇÃO
-========================================== */
+/* =========================================
+   PERSONAGENS
+========================================= */
 
-const MODEL_URL =
-"https://pub-2534e921bf9c4314addcd4d8a6e98b7b.r2.dev/avatars/mixamo/glb/y-bot.glb";
-
-
-const personagens={
+const personagens = {
 
   "homem aranha":{
     nome:"Aranha Urbano",
-    cor:0xb40024
+    tipo:"spider"
+  },
+
+  "aranha urbano":{
+    nome:"Aranha Urbano",
+    tipo:"spider"
   },
 
   "hulk":{
     nome:"Hulk",
-    cor:0x4b9b3b
+    tipo:"hulk"
   },
 
   "batman":{
     nome:"Batman",
-    cor:0x111111
+    tipo:"batman"
   },
 
   "homem de ferro":{
     nome:"Homem de Ferro",
-    cor:0xc00018
+    tipo:"iron"
   },
 
   "superman":{
     nome:"Superman",
-    cor:0x185db5
+    tipo:"superman"
+  },
+
+  "super man":{
+    nome:"Superman",
+    tipo:"superman"
   },
 
   "flash":{
     nome:"Flash",
-    cor:0xd00015
+    tipo:"flash"
   },
 
   "ninja":{
     nome:"Ninja",
-    cor:0x202030
-  },
-
-  "alien":{
-    nome:"Alien",
-    cor:0x39b96a
+    tipo:"ninja"
   },
 
   "mago":{
     nome:"Mago Arcano",
-    cor:0x641b9b
+    tipo:"mage"
   },
 
-  "cosmico":{
-    nome:"Guerreiro Cósmico",
-    cor:0x2635a8
+  "robo":{
+    nome:"Robô Futurista",
+    tipo:"robot"
+  },
+
+  "alien":{
+    nome:"Alienígena",
+    tipo:"alien"
+  },
+
+  "dragao":{
+    nome:"Dragão Guerreiro",
+    tipo:"dragon"
+  },
+
+  "samurai":{
+    nome:"Samurai Neon",
+    tipo:"samurai"
   }
 
 };
 
-
-/* presentes */
-
-const presentes={
-
-  "rose":"homem aranha",
-  "rosa":"homem aranha",
-
-  "lion":"hulk",
-  "leao":"hulk",
-
-  "crown":"batman",
-  "coroa":"batman",
-
-  "rocket":"homem de ferro",
-  "foguete":"homem de ferro",
-
-  "heart":"superman",
-  "coracao":"superman",
-
-  "lightning":"flash",
-  "raio":"flash",
-
-  "ninja":"ninja",
-  "star":"mago",
-  "estrela":"mago"
-
-};
-
-
-/* ==========================================
-   THREE
-========================================== */
-
-let scene;
-let camera;
-let renderer;
-let model=null;
-let mixer=null;
-
-let clock=
-  new THREE.Clock();
-
 let ocupado=false;
 
 
-/* ==========================================
-   INICIAR
-========================================== */
-
-function init(){
-
-  const container=
-    document.getElementById(
-      "character"
-    );
-
-  scene=
-    new THREE.Scene();
-
-
-  camera=
-    new THREE.PerspectiveCamera(
-      32,
-      window.innerWidth/
-      document.getElementById("stage").clientHeight,
-      .1,
-      100
-    );
-
-  camera.position.set(
-    0,
-    1.7,
-    6
-  );
-
-
-  renderer=
-    new THREE.WebGLRenderer({
-      antialias:true,
-      alpha:true
-    });
-
-
-  renderer.setPixelRatio(
-    Math.min(
-      window.devicePixelRatio,
-      2
-    )
-  );
-
-
-  renderer.setSize(
-    window.innerWidth,
-    document.getElementById("stage").clientHeight
-  );
-
-
-  renderer.shadowMap.enabled=true;
-
-  renderer.shadowMap.type=
-    THREE.PCFSoftShadowMap;
-
-
-  container.appendChild(
-    renderer.domElement
-  );
-
-
-  /* iluminação */
-
-  const ambiente=
-    new THREE.HemisphereLight(
-      0xffffff,
-      0x101020,
-      2
-    );
-
-  scene.add(ambiente);
-
-
-  const luzPrincipal=
-    new THREE.DirectionalLight(
-      0xffffff,
-      4
-    );
-
-  luzPrincipal.position.set(
-    3,
-    7,
-    5
-  );
-
-  luzPrincipal.castShadow=true;
-
-  scene.add(luzPrincipal);
-
-
-  const luzAzul=
-    new THREE.PointLight(
-      0x008cff,
-      40,
-      12
-    );
-
-  luzAzul.position.set(
-    -4,
-    3,
-    2
-  );
-
-  scene.add(luzAzul);
-
-
-  const luzVermelha=
-    new THREE.PointLight(
-      0xff003c,
-      40,
-      12
-    );
-
-  luzVermelha.position.set(
-    4,
-    3,
-    2
-  );
-
-  scene.add(luzVermelha);
-
-
-  /* chão */
-
-  const piso=
-    new THREE.Mesh(
-
-      new THREE.CircleGeometry(
-        2.2,
-        64
-      ),
-
-      new THREE.MeshStandardMaterial({
-        color:0x080808,
-        roughness:.4,
-        metalness:.5
-      })
-
-    );
-
-
-  piso.rotation.x=
-    -Math.PI/2;
-
-  piso.position.y=-2.25;
-
-  piso.receiveShadow=true;
-
-  scene.add(piso);
-
-
-  carregarModelo();
-
-
-  window.addEventListener(
-    "resize",
-    resize
-  );
-
-
-  animate();
-}
-
-
-/* ==========================================
-   MODELO 3D REAL
-========================================== */
-
-function carregarModelo(){
-
-  const loader=
-    new THREE.GLTFLoader();
-
-
-  loader.load(
-
-    MODEL_URL,
-
-    function(gltf){
-
-      model=
-        gltf.scene;
-
-
-      model.scale.set(
-        2.2,
-        2.2,
-        2.2
-      );
-
-
-      model.position.set(
-        0,
-        -2.25,
-        0
-      );
-
-
-      model.rotation.y=
-        Math.PI;
-
-
-      model.traverse(
-        function(obj){
-
-          if(obj.isMesh){
-
-            obj.castShadow=true;
-            obj.receiveShadow=true;
-
-          }
-
-        }
-      );
-
-
-      scene.add(model);
-
-
-      if(gltf.animations &&
-         gltf.animations.length){
-
-        mixer=
-          new THREE.AnimationMixer(
-            model
-          );
-
-        mixer.clipAction(
-          gltf.animations[0]
-        ).play();
-
-      }
-
-    },
-
-    undefined,
-
-    function(error){
-
-      console.error(error);
-
-      document.getElementById(
-        "status"
-      ).textContent=
-        "❌ Não foi possível carregar o modelo 3D";
-
-    }
-
-  );
+/* =========================================
+   NORMALIZAR TEXTO
+========================================= */
+
+function normalizar(texto){
+
+  return texto
+    .toLowerCase()
+    .trim()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g,"");
 
 }
 
 
-/* ==========================================
-   CORES
-========================================== */
+/* =========================================
+   TESTE
+========================================= */
 
-function aplicarVisual(cor){
+function testar(){
 
-  if(!model)return;
+  const campo=document.getElementById("cmd");
 
+  iniciarPorNome(campo.value);
 
-  model.traverse(
-    function(obj){
-
-      if(!obj.isMesh)return;
-
-
-      if(!obj.material)return;
-
-
-      /* deixa o modelo com
-         aparência de palco */
-
-      obj.material.roughness=.35;
-
-
-      /*
-        Não pintamos tudo do modelo,
-        porque isso destruiria
-        as texturas.
-      */
-
-    }
-  );
+  campo.value="";
 
 }
 
 
-/* ==========================================
-   SHOW
-========================================== */
+/* =========================================
+   INICIAR POR NOME
+========================================= */
 
-function show(nome){
+function iniciarPorNome(valor){
 
-  const chave=
-    normalizar(nome);
+  const chave=normalizar(valor);
 
-  const personagem=
-    personagens[chave];
-
+  const personagem=personagens[chave];
 
   if(!personagem){
 
-    document.getElementById(
-      "status"
-    ).textContent=
+    document.getElementById("status").textContent=
       "❌ Personagem não encontrado";
 
     return;
   }
 
+  iniciar(personagem);
+
+}
+
+
+/* =========================================
+   INICIAR PERSONAGEM
+========================================= */
+
+function iniciar(personagem){
 
   if(ocupado){
 
-    document.getElementById(
-      "status"
-    ).textContent=
+    document.getElementById("status").textContent=
       "⏳ Aguarde o personagem terminar";
 
     return;
   }
 
-
   ocupado=true;
 
-
-  const container=
-    document.getElementById(
-      "character"
-    );
-
-
-  const status=
-    document.getElementById(
-      "status"
-    );
-
+  const hero=
+    document.getElementById("character");
 
   const name=
-    document.getElementById(
-      "name"
-    );
+    document.getElementById("name");
+
+  const status=
+    document.getElementById("status");
 
 
-  if(!model){
+  /* troca aparência */
 
-    status.textContent=
-      "⏳ Carregando modelo 3D...";
-
-    ocupado=false;
-
-    return;
-  }
+  aplicarVisual(personagem.tipo);
 
 
-  model.visible=true;
+  name.textContent=personagem.nome;
 
-  model.position.set(
-    -3.5,
-    -2.25,
-    0
-  );
+  name.style.display="block";
 
 
-  name.textContent=
-    personagem.nome;
+  /* ENTRADA */
 
-  name.style.display=
-    "block";
+  hero.className="";
 
+  void hero.offsetWidth;
 
-  container.className=
-    "enter";
-
+  hero.classList.add("enter");
 
   status.textContent=
     "🚪 "+personagem.nome+
-    " entrando...";
+    " entrando no palco";
 
 
-  /* entrada */
+  /* DANÇA */
 
-  const inicio=
-    performance.now();
+  setTimeout(()=>{
 
+    hero.className="";
 
-  function entrada(now){
+    void hero.offsetWidth;
 
-    const p=
-      Math.min(
-        (now-inicio)/1200,
-        1
-      );
+    hero.classList.add("dance");
 
+    status.textContent=
+      "🔥 "+personagem.nome+
+      " está DANÇANDO!";
 
-    const suave=
-      1-Math.pow(
-        1-p,
-        4
-      );
+  },1400);
 
 
-    model.position.x=
-      -3.5+
-      3.5*suave;
+  /* SAÍDA */
+
+  setTimeout(()=>{
+
+    hero.className="";
+
+    void hero.offsetWidth;
+
+    hero.classList.add("exit");
+
+    status.textContent=
+      "🚪 "+personagem.nome+
+      " saindo do palco...";
+
+  },6500);
 
 
-    model.rotation.y=
-      Math.PI+
-      (1-suave)*1.4;
+  /* RESET */
+
+  setTimeout(()=>{
+
+    hero.style.display="none";
+
+    hero.className="";
+
+    name.style.display="none";
+
+    status.textContent=
+      "🟢 LIVE Stage pronto";
+
+    ocupado=false;
+
+  },7900);
+
+}
 
 
-    if(p<1){
+/* =========================================
+   VISUAL 2D
+========================================= */
 
-      requestAnimationFrame(
-        entrada
-      );
+function aplicarVisual(tipo){
 
-    }else{
+  const svg=document.querySelector("#character svg");
 
-      dançar();
+  /* mantém o desenho principal,
+     mas muda a paleta */
 
-    }
+  if(tipo==="hulk"){
+
+    svg.style.filter=
+      "hue-rotate(55deg) saturate(1.5)";
 
   }
 
+  else if(tipo==="batman"){
 
-  requestAnimationFrame(
-    entrada
-  );
-}
-
-
-/* ==========================================
-   DANÇA
-========================================== */
-
-function dançar(){
-
-  const status=
-    document.getElementById(
-      "status"
-    );
-
-
-  const container=
-    document.getElementById(
-      "character"
-    );
-
-
-  status.textContent=
-    "🔥 "+document.getElementById(
-      "name"
-    ).textContent+
-    " está dançando!";
-
-
-  container.className=
-    "dance";
-
-
-  model.userData.dancando=
-    true;
-
-
-  setTimeout(
-    sair,
-    5200
-  );
-}
-
-
-/* ==========================================
-   SAÍDA
-========================================== */
-
-function sair(){
-
-  const container=
-    document.getElementById(
-      "character"
-    );
-
-
-  const status=
-    document.getElementById(
-      "status"
-    );
-
-
-  status.textContent=
-    "🚪 Saindo do palco...";
-
-
-  container.className=
-    "exit";
-
-
-  const inicio=
-    performance.now();
-
-
-  const xInicial=
-    model.position.x;
-
-
-  function animarSaida(now){
-
-    const p=
-      Math.min(
-        (now-inicio)/1100,
-        1
-      );
-
-
-    model.position.x=
-      xInicial+
-      4.5*p;
-
-
-    model.rotation.y=
-      Math.PI-
-      p*1.3;
-
-
-    model.scale.setScalar(
-      2.2-
-      .55*p
-    );
-
-
-    if(p<1){
-
-      requestAnimationFrame(
-        animarSaida
-      );
-
-    }else{
-
-      finalizar();
-
-    }
+    svg.style.filter=
+      "grayscale(1) brightness(.55)";
 
   }
 
+  else if(tipo==="iron"){
 
-  requestAnimationFrame(
-    animarSaida
-  );
+    svg.style.filter=
+      "hue-rotate(-25deg) saturate(1.7)";
+
+  }
+
+  else if(tipo==="superman"){
+
+    svg.style.filter=
+      "hue-rotate(15deg) saturate(1.45)";
+
+  }
+
+  else if(tipo==="flash"){
+
+    svg.style.filter=
+      "hue-rotate(-15deg) saturate(1.9)";
+
+  }
+
+  else if(tipo==="ninja"){
+
+    svg.style.filter=
+      "brightness(.45) saturate(1.5)";
+
+  }
+
+  else if(tipo==="mage"){
+
+    svg.style.filter=
+      "hue-rotate(70deg) saturate(1.6)";
+
+  }
+
+  else if(tipo==="robot"){
+
+    svg.style.filter=
+      "grayscale(.65) brightness(1.15)";
+
+  }
+
+  else if(tipo==="alien"){
+
+    svg.style.filter=
+      "hue-rotate(90deg) saturate(1.8)";
+
+  }
+
+  else if(tipo==="dragon"){
+
+    svg.style.filter=
+      "hue-rotate(-30deg) saturate(2)";
+
+  }
+
+  else if(tipo==="samurai"){
+
+    svg.style.filter=
+      "hue-rotate(160deg) saturate(1.6)";
+
+  }
+
+  else{
+
+    svg.style.filter="none";
+
+  }
+
 }
 
 
-/* ==========================================
-   FINAL
-========================================== */
+/* =========================================
+   ENTER NO TECLADO
+========================================= */
 
-function finalizar(){
+document
+.getElementById("cmd")
+.addEventListener("keydown",function(e){
 
-  const container=
-    document.getElementById(
-      "character"
-    );
+  if(e.key==="Enter"){
+    testar();
+  }
 
-
-  const status=
-    document.getElementById(
-      "status"
-    );
+});
 
 
-  const name=
-    document.getElementById(
-      "name"
-    );
+/* =========================================
+   SISTEMA DE PRESENTES
+   PREPARADO PARA A INTEGRAÇÃO
+========================================= */
+
+const presentes={
+
+  "rose":"homem aranha",
+
+  "rosa":"homem aranha",
+
+  "lion":"hulk",
+
+  "leao":"hulk",
+
+  "crown":"batman",
+
+  "coroa":"batman",
+
+  "rocket":"homem de ferro",
+
+  "foguete":"homem de ferro",
+
+  "heart":"superman",
+
+  "coracao":"superman",
+
+  "lightning":"flash",
+
+  "raio":"flash",
+
+  "star":"mago",
+
+  "estrela":"mago",
+
+  "dragon":"dragao",
+
+  "dragao":"dragao"
+
+};
 
 
-  container.className="";
+/* =========================================
+   RECEBER PRESENTE
+========================================= */
 
-  container.style.opacity="0";
-
-
-  name.style.display="none";
-
-
-  status.textContent=
-    "🟢 LIVE STAGE 3D • PRONTO";
-
-
-  model.visible=false;
-
-  model.scale.set(
-    2.2,
-    2.2,
-    2.2
-  );
-
-
-  ocupado=false;
-}
-
-
-/* ==========================================
-   PRESENTE
-========================================== */
-
-function receberPresenteTikTok(
-  presente
-){
+function receberPresenteTikTok(nomePresente){
 
   const chave=
-    normalizar(presente);
-
+    normalizar(nomePresente);
 
   const personagem=
     presentes[chave];
 
-
   if(!personagem){
 
-    document.getElementById(
-      "status"
-    ).textContent=
+    document.getElementById("status").textContent=
       "🎁 Presente recebido: "+
-      presente;
+      nomePresente;
 
     return;
   }
 
+  iniciarPorNome(personagem);
 
-  show(personagem);
 }
 
 
-/* ==========================================
-   NORMALIZAR
-========================================== */
+/* TESTE:
 
-function normalizar(texto){
+receberPresenteTikTok("rosa");
 
-  return String(texto)
-    .toLowerCase()
-    .trim()
-    .normalize("NFD")
-    .replace(
-      /[\u0300-\u036f]/g,
-      ""
-    );
-}
-
-
-/* ==========================================
-   INPUT
-========================================== */
-
-function testar(){
-
-  const campo=
-    document.getElementById(
-      "cmd"
-    );
-
-
-  show(
-    campo.value
-  );
-
-
-  campo.value="";
-}
-
-
-document
-  .getElementById("cmd")
-  .addEventListener(
-    "keydown",
-    function(e){
-
-      if(e.key==="Enter"){
-        testar();
-      }
-
-    }
-  );
-
-
-/* ==========================================
-   ANIMAÇÃO
-========================================== */
-
-function animate(){
-
-  requestAnimationFrame(
-    animate
-  );
-
-
-  const delta=
-    clock.getDelta();
-
-
-  const tempo=
-    clock.elapsedTime;
-
-
-  if(mixer){
-
-    mixer.update(delta);
-
-  }
-
-
-  if(model &&
-     model.visible){
-
-    /* dança procedural */
-
-    if(model.userData.dancando){
-
-      model.position.y=
-        -2.25+
-        Math.abs(
-          Math.sin(
-            tempo*5
-          )
-        )*.13;
-
-
-      model.rotation.z=
-        Math.sin(
-          tempo*5
-        )*.055;
-
-
-      model.rotation.y=
-        Math.PI+
-        Math.sin(
-          tempo*2
-        )*.12;
-
-    }
-
-  }
-
-
-  renderer.render(
-    scene,
-    camera
-  );
-}
-
-
-/* ==========================================
-   RESIZE
-========================================== */
-
-function resize(){
-
-  const stage=
-    document.getElementById(
-      "stage"
-    );
-
-
-  camera.aspect=
-    window.innerWidth/
-    stage.clientHeight;
-
-
-  camera.updateProjectionMatrix();
-
-
-  renderer.setSize(
-    window.innerWidth,
-    stage.clientHeight
-  );
-}
-
-
-/* ==========================================
-   START
-========================================== */
-
-init();
+*/
 
 </script>
 
